@@ -18,7 +18,16 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     // Matches "/api/register
     $router->post('register', 'AuthController@register');
-    
+
     // Matches "/api/login
     $router->post('login', 'AuthController@login');
+
+    //User
+    $router->get('profile', 'UserController@profile');
+
+    //get one user by id
+    $router->get('users/{id}', 'UserController@singleUser');
+
+    // Matches "/api/users
+    $router->get('users', 'UserController@allUsers');
 });
