@@ -15,19 +15,20 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group(['prefix' => 'api'], function () use ($router) {
-    // Matches "/api/register
+$router->group(['prefix' => 'api/v1'], function () use ($router) {
+    // Matches "/api/v1/register
     $router->post('register', 'AuthController@register');
 
-    // Matches "/api/login
+    // Matches "/api/v1/login
     $router->post('login', 'AuthController@login');
 
     //User
     $router->get('profile', 'UserController@profile');
+    $router->get('profile/{id}', 'UserController@singleProfile');
 
     //get one user by id
     $router->get('users/{id}', 'UserController@singleUser');
 
-    // Matches "/api/users
+    // Matches "/api/v1/users
     $router->get('users', 'UserController@allUsers');
 });

@@ -8,12 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
-    /**
-     * Store a new user.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
     public function register(Request $request)
     {
         //validate incoming request 
@@ -30,16 +24,24 @@ class AuthController extends Controller
             $user->email    = $request->input('email');
             $plainPassword  = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
-
-            $user->save();
+            $user->save();           
 
             //return successful response
-            return response()->json(['user' => $user, 'message' => 'User added successfully!'], 201);
+            return response()->json([
+                'success' => true,
+                'message' => 'User added successfully!',
+                'user' => $user, 
+            ], 201);
 
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['message' => 'User Registration Failed!'], 409);
+            return response()->json([
+                'success' => false,
+                'message' => 'User Registration Failed!'
+            ], 409);
         }
+
+        
 
     }
 
@@ -54,7 +56,10 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
         
         if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
         }
 
         return $this->respondWithToken($token);
