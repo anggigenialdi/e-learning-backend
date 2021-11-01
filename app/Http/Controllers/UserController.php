@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\User_Profile;
+use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 
 class UserController extends Controller
@@ -15,9 +16,60 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
+    public function postProfile(Request $request)
+    {
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'no_kontak' => 'required',
+            'alamat' => 'required|string',
+            'no_rekening' => 'required',
+            'bank' => 'required|string',
+        ]);
+
+        // $input = $request->all();
+        // $data = Profile::create($input);
+        // var_dump($data);die();
+        
+        try {
+            
+            $data = Profile::firstOrNew([
+                'user_id' => $request->user_id,
+                'no_kontak' => $request->no_kontak,
+                'alamat' => $request->alamat,
+                'no_rekening' => $request->no_rekening,
+                'bank' => $request->bank,
+            ]);
+            
+            $data->save();
+            if(!$data == null){
+                //return successful response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Successfully complete profile',
+                    'user' => $data, 
+                ], 201);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate!'
+                ], 409);
+            }
+            
+
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                'success' => false,
+                'message' => 'Complete profile Failed!'
+            ], 409);
+        }
+    }
+
     public function profile()
     {
         return response()->json([
+            'success' => true,
+            'message' => 'This data user login',
             'user' => Auth::user()
         ], 200);
     }
@@ -42,13 +94,15 @@ class UserController extends Controller
     public function singleProfile($id)
     {
         try {
-            $user_profile = User_Profile::findOrFail($id);
-            dd('kopong');
+            $user_profile = Profile::findOrFail($id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'user' => $user_profile
+                'user' => ([
+                    Auth::user(), 
+                    $user_profile
+                ])
             ], 200);
 
         } catch (\Exception $e) {

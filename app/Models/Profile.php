@@ -9,9 +9,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 
-use Tymon\JWTAuth\Contracts\JWTSubject;
-
-class User_Profile extends Model implements AuthenticatableContract, AuthorizableContract
+class Profile extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
 

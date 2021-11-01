@@ -23,6 +23,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('login', 'AuthController@login');
 
     //User
+    $router->post('add-profile', 'UserController@postProfile');
     $router->get('profile', 'UserController@profile');
     $router->get('profile/{id}', 'UserController@singleProfile');
 
