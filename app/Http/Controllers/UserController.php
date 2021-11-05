@@ -94,13 +94,30 @@ class UserController extends Controller
     public function singleProfile($id)
     {
         try {
-            $user_profile = Profile::with(['user' => fn ($query) => $query->select('id','nama','email')])->findOrFail($id);
+            //cek user login jika bukan maka data tidak akan ditampilkan
+            if (Auth::id() != $id ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Forbidden!'
+                ], 403);
+            } else {
+                //get user profile 
+                $user_auth = Profile::findOrFail($id)->user::with([
+                    'user_profile'  => fn ($query) => $query->select(
+                        'user_id',
+                        'no_kontak',
+                        'alamat',
+                        'no_rekening',
+                        'bank')
+                        ])->findOrFail($id);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'data' => ([
-                    $user_profile,
+                'user' => ([
+                    $user_auth,
+
                 ])
             ], 200);
 

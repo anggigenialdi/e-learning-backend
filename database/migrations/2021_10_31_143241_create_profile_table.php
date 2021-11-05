@@ -15,12 +15,19 @@ class CreateProfileTable extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->string('no_kontak');
             $table->string('alamat');
             $table->string('no_rekening');
             $table->string('bank');
             $table->timestamps();
+        });
+
+
+        Schema::table('profiles', function(Blueprint $kolom){
+            $kolom->foreign('user_id')
+            ->references('id')
+            ->on('users');
         });
     }
 
@@ -31,6 +38,6 @@ class CreateProfileTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profile');
+        Schema::dropIfExists('profiles');
     }
 }

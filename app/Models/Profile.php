@@ -18,7 +18,7 @@ class Profile extends Model implements AuthenticatableContract, AuthorizableCont
     ];
 
     protected $hidden = [
-        'no_kontak',
+        'id',
     ];
 
     public function user(){
