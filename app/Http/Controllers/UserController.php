@@ -25,50 +25,56 @@ class UserController extends Controller
             'no_rekening' => 'required',
             'bank' => 'required|string',
         ]);
-        
-        try {
-            
-            $data = Profile::firstOrNew([
-                'user_id' => $request->user_id,
-                'no_kontak' => $request->no_kontak,
-                'alamat' => $request->alamat,
-                'no_rekening' => $request->no_rekening,
-                'bank' => $request->bank,
-            ]);
 
-            //Cek duplicate input data
-            $existing_data = $data->where('user_id', $data->user_id)->first();
-            if ( $existing_data ) {
+        $data = Profile::firstOrNew([
+            'user_id' => $request->user_id,
+            'no_kontak' => $request->no_kontak,
+            'alamat' => $request->alamat,
+            'no_rekening' => $request->no_rekening,
+            'bank' => $request->bank,
+        ]);
+
+        // Hak akses input data user login atau admin
+        if ( (Auth::user()->role === 'admin') || (Auth::id() == $data->user_id) ){
+            try {
+
+                //Cek duplicate input data
+                $existing_data = $data->where('user_id', $data->user_id)->first();
+                if ( $existing_data ) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'user already used',
+                        'data' => $existing_data
+                    ], 425);
+                } else {
+
+                    $data->save();
+                }
+                if(!$data == null){
+                    //return successful response
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Successfully complete profile',
+                        'user' => $data, 
+                    ], 201);
+                }else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'user already used',
+                    ], 425);
+                }
+            } catch (\Exception $e) {
+                //return error message
                 return response()->json([
                     'success' => false,
-                    'message' => 'user already used',
-                    'data' => $existing_data
-                ], 425);
-            } else {
-
-                $data->save();
+                    'message' => 'Complete profile Failed or dont have acount'
+                ], 409);
             }
-            if(!$data == null){
-                //return successful response
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Successfully complete profile',
-                    'user' => $data, 
-                ], 201);
-            }else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Duplicate!'
-                ], 425);
-            }
-            
-
-        } catch (\Exception $e) {
-            //return error message
+        } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Complete profile Failed or dont have acount'
-            ], 409);
+                'message' => 'Access to that resource is forbidden'
+            ], 403);
         }
     }
 
