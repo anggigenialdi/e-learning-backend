@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use SebastianBergmann\Environment\Console;
 
 class UserController extends Controller
 {
@@ -35,8 +35,19 @@ class UserController extends Controller
                 'no_rekening' => $request->no_rekening,
                 'bank' => $request->bank,
             ]);
-            
-            $data->save();
+
+            //Cek duplicate input data
+            $existing_data = $data->where('user_id', $data->user_id)->first();
+            if ( $existing_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user already used',
+                    'data' => $existing_data
+                ], 425);
+            } else {
+
+                $data->save();
+            }
             if(!$data == null){
                 //return successful response
                 return response()->json([
@@ -48,7 +59,7 @@ class UserController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Duplicate!'
-                ], 409);
+                ], 425);
             }
             
 
@@ -56,7 +67,7 @@ class UserController extends Controller
             //return error message
             return response()->json([
                 'success' => false,
-                'message' => 'Complete profile Failed!'
+                'message' => 'Complete profile Failed or dont have acount'
             ], 409);
         }
     }
@@ -81,8 +92,8 @@ class UserController extends Controller
         }else {
             return response()->json([
                 'success' => false,
-                'message' => 'You dont have permission!!'
-            ], 404);
+                'message' => 'Access to that resource is forbidden'
+            ], 403);
         }
         
     }
@@ -94,7 +105,7 @@ class UserController extends Controller
             if (Auth::id() != $id ) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Forbidden!'
+                    'message' => 'Access to that resource is forbidden!'
                 ], 403);
             } else {
                 //get user profile 
@@ -114,8 +125,7 @@ class UserController extends Controller
                 'success' => true,
                 'message' => 'User Profile',
                 'user' => ([
-                    $user_auth,
-
+                    $user_auth
                 ])
             ], 200);
 
