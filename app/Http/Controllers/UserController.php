@@ -25,10 +25,6 @@ class UserController extends Controller
             'no_rekening' => 'required',
             'bank' => 'required|string',
         ]);
-
-        // $input = $request->all();
-        // $data = Profile::create($input);
-        // var_dump($data);die();
         
         try {
             
@@ -102,14 +98,16 @@ class UserController extends Controller
                 ], 403);
             } else {
                 //get user profile 
-                $user_auth = Profile::findOrFail($id)->user::with([
-                    'user_profile'  => fn ($query) => $query->select(
-                        'user_id',
-                        'no_kontak',
-                        'alamat',
-                        'no_rekening',
-                        'bank')
-                        ])->findOrFail($id);
+                $user_auth = Profile::findOrFail($id)
+                ->user::with([
+                        'user_profile'  => fn ($query) => $query
+                        ->select(
+                            'user_id',
+                            'no_kontak',
+                            'alamat',
+                            'no_rekening',
+                            'bank')
+                    ])->findOrFail($id);
             }
 
             return response()->json([
