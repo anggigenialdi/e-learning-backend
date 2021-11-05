@@ -94,14 +94,13 @@ class UserController extends Controller
     public function singleProfile($id)
     {
         try {
-            $user_profile = Profile::findOrFail($id);
+            $user_profile = Profile::with(['user' => fn ($query) => $query->select('id','nama','email')])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'user' => ([
-                    Auth::user(), 
-                    $user_profile
+                'data' => ([
+                    $user_profile,
                 ])
             ], 200);
 
@@ -115,25 +114,5 @@ class UserController extends Controller
 
     }
 
-    public function singleUser($id)
-    {
-        try {
-            $user = User::findOrFail($id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'List User By Id',
-                'user' => $user
-            ], 200);
-
-        } catch (\Exception $e) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'user not found!'
-            ], 404);
-        }
-
-    }
 
 }

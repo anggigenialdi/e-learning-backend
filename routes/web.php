@@ -27,9 +27,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
     $router->get('profile/{id}', 'UserController@singleProfile');
 
-    //get one user by id
-    $router->get('users/{id}', 'UserController@singleUser');
-
     // Matches "/api/v1/users
     $router->get('users', 'UserController@allUsers');
 });

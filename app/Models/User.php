@@ -30,11 +30,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password',
+        'id','password'
     ];
 
     public function user_profile(){
-        return $this->hasMany(User_Profile::class, 'user_id');
+        return $this->hasOne(Profile::class, 'user_id');
     }
 
     public function getJWTIdentifier()
