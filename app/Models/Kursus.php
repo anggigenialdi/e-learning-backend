@@ -9,12 +9,12 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 
-class Profile extends Model implements AuthenticatableContract, AuthorizableContract
+class Kursus extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'user_id', 'no_kontak', 'alamat', 'no_rekening', 'bank'
+        'instruktur_id', 'judul_kursus', 'foto', 'harga_kursus', 'tipe_kursus'
     ];
 
     protected $hidden = [
@@ -22,7 +22,7 @@ class Profile extends Model implements AuthenticatableContract, AuthorizableCont
     ];
 
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Instruktur::class);
     }
 
 }

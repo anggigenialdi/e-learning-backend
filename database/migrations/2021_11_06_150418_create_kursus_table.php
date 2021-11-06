@@ -15,12 +15,18 @@ class CreateKursusTable extends Migration
     {
         Schema::create('kursus', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('instruktur_id');
+            $table->unsignedInteger('instruktur_id');
             $table->string('judul_kursus');
             $table->string('foto_kursus');
             $table->string('harga_kursus');
             $table->string('tipe_kursus');
             $table->timestamps();
+        });
+
+        Schema::table('kursus', function(Blueprint $kolom){
+            $kolom->foreign('instruktur_id')
+            ->references('id')
+            ->on('instruktur');
         });
     }
 
