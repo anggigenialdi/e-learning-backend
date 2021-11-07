@@ -42,9 +42,22 @@ class InstrukturController extends Controller
         $add_Instruktur->nama = $request->nama;
         $add_Instruktur->keterangan = $request->keterangan;
 
-        $add_Instruktur->save();
+        // $add_Instruktur->save();
 
         try {
+            //Cek duplicate input data
+            $duplicate_data = $add_Instruktur->where( 'keterangan', $add_Instruktur->keterangan )->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $add_Instruktur,
+
+                ], 425);
+            } else {
+
+                $add_Instruktur->save();
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully complete Instruktur',
