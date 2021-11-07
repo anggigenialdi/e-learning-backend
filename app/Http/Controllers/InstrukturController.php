@@ -18,57 +18,39 @@ class InstrukturController extends Controller
 
     public function postInstruktur(Request $request)
     {
+
         $this->validate($request, [
-            'name'  => 'required|string',
+            'nama'  => 'required|string',
             'keterangan' => 'required|string',
-            'foto' => 'required|image',
-        ]);
-        $avatar = Str::random(34);
-        $request->file('foto')->move(storage_path('avatar'), $avatar);
-
-        $data = Instruktur::firstOrNew([
-            'nama' => $request->nama,
-            'keterangan' => $request->keterangan,
-            'foto' => $request->foto,
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
 
-        // Hak akses input data 
-        if ( (Auth::user()->role != 'basic') ){
-            try {
+        $add_Instruktur = new Instruktur;
 
-                //Cek duplicate input data
-                $existing_data = $data->where('nama', $data->nama)->first();
-                if ( $existing_data ) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'user already used',
-                        'data' => $existing_data
-                    ], 425);
-                } else {
+        if ($request->hasFile('foto')){
+            $file = $request->file('foto');
+            $allowedFileExtention = ['png','jpeg','jpg','svg','gif'];
+            $extention = $file->getClientOriginalExtension();
+            $check = in_array($extention, $allowedFileExtention);
 
-                    $data->save();
-                }
-                if(!$data == null){
-                    //return successful response
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Successfully complete Instruktur',
-                        'user' => $data, 
-                    ], 201);
-                }else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'user already used',
-                    ], 425);
-                }
-            } catch (\Exception $e) {
-                //return error message
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Complete Instruktur Failed or dont have acount'
-                ], 409);
+            if($check) {
+                $name = time().'.'.$file->getClientOriginalExtension();
+                $file->move(storage_path('/public/foto-instruktur', $name));
+                $add_Instruktur->foto = $name;
             }
-        } else {
+        }
+        $add_Instruktur->nama = $request->nama;
+        $add_Instruktur->keterangan = $request->keterangan;
+
+        $add_Instruktur->save();
+
+        try {
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully complete Instruktur',
+                'user' => $add_Instruktur, 
+            ], 201);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Access to that resource is forbidden'
@@ -76,6 +58,18 @@ class InstrukturController extends Controller
         }
     }
 
+    public function get_avatar($name)
+    {
+        $avatar_path = storage_path('/public/foto-instruktur') . '/' . $name;
+    if (file_exists($avatar_path)) {
+        $file = file_get_contents($avatar_path);
+        return response($file, 200)->header('Content-Type', 'image/jpeg');
+        }
+    $res['success'] = false;
+        $res['message'] = "Avatar not found";
+        
+        return $res;
+    }
 
 
 }

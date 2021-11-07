@@ -26,7 +26,7 @@ class CreateKursusTable extends Migration
         Schema::table('kursus', function(Blueprint $kolom){
             $kolom->foreign('instruktur_id')
             ->references('id')
-            ->on('instruktur');
+            ->on('instrukturs');
         });
     }
 

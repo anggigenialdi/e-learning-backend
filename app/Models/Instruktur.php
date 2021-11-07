@@ -34,7 +34,7 @@ class Instruktur extends Model implements AuthenticatableContract, AuthorizableC
     ];
 
     public function kursus(){
-        return $this->hasOne(Instruktur::class, 'instruktur_id');
+        return $this->hasOne(Kursus::class, 'instruktur_id');
     }
 
     public function getJWTIdentifier()

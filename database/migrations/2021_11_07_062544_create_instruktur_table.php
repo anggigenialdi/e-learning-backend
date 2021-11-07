@@ -13,7 +13,7 @@ class CreateInstrukturTable extends Migration
      */
     public function up()
     {
-        Schema::create('instruktur', function (Blueprint $table) {
+        Schema::create('instrukturs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama')->notNullable();
             $table->string('keterangan')->notNullable();
@@ -29,7 +29,7 @@ class CreateInstrukturTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instruktur');
+        Schema::dropIfExists('instrukturs');
         Schema::dropIfExists('kursus');
     }
 }
