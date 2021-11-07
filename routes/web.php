@@ -29,4 +29,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     // Matches "/api/v1/users
     $router->get('users', 'UserController@allUsers');
+
+    // Instruktur 
+    $router->post('add-instruktur', 'InstrukturController@postInstruktur');
 });
