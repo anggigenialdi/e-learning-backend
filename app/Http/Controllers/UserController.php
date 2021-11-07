@@ -16,6 +16,57 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
+    public function storeProfile(Request $request)
+    {
+        $this->validate($request, [
+            'no_kontak' => 'required',
+            'alamat' => 'required|string',
+            'no_rekening' => 'required',
+            'bank' => 'required|string',
+        ]);
+
+        try {
+            $profile = Profile::where('user_id', Auth::user()->id)->first();
+
+            if (!$profile){
+                $profile = new Profile;
+                $profile->user_id = Auth::user()->id;
+            }
+            $profile->no_kontak = $request->no_kontak;
+            $profile->alamat = $request->alamat;
+            $profile->no_rekening = $request->no_rekening;
+            $profile->bank = $request->bank;
+
+            //Cek duplicate input data
+            $duplicate_data = $profile->where( 'no_kontak', $profile->no_kontak )->first();
+            $duplicate_noreq = $profile->where( 'no_rekening', $profile->no_rekening )->first();
+            if ( $duplicate_data || $duplicate_noreq ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user already used',
+                    'data' => $duplicate_data, 
+                    'data' => $duplicate_noreq,
+                    'data' => $profile,
+
+                ], 425);
+            } else {
+
+                $profile->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully complete profile',
+                'user' => $profile, 
+                ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Complete profile Failed or dont have acount'
+            ], 409);
+        }
+    }
     public function postProfile(Request $request)
     {
         $this->validate($request, [

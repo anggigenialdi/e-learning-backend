@@ -22,7 +22,7 @@ class Profile extends Model implements AuthenticatableContract, AuthorizableCont
     ];
 
     public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
 }

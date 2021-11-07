@@ -23,8 +23,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('login', 'AuthController@login');
 
     //User
+    //Complete profile with user login or admin
     $router->post('add-profile', 'UserController@postProfile');
-    $router->get('profile', 'UserController@profile');
+    //Complete profile with user login
+    $router->post('profile', 'UserController@storeProfile');
+    $router->get('user-login', 'UserController@profile');
     $router->get('profile/{id}', 'UserController@singleProfile');
 
     // Matches "/api/v1/users
