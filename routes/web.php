@@ -25,7 +25,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //User
     //Complete profile with user login or admin
     $router->post('add-profile', 'UserController@postProfile');
-    //Complete profile with user login
+    //Complete data profile with user login
     $router->post('profile', 'UserController@storeProfile');
     $router->get('user-login', 'UserController@profile');
     $router->get('profile/{id}', 'UserController@singleProfile');
@@ -35,6 +35,9 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     // Instruktur 
     $router->post('add-instruktur', 'InstrukturController@postInstruktur');
+    // Kursus 
+    $router->post('add-kursus', 'KursusController@postKursus');
 });
 
+//Endpoint show image instruktur
 $router->get('/user/avatar/{name}', 'InstrukturController@get_avatar');

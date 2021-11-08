@@ -6,3 +6,4 @@ Homestead.yaml
 .phpunit.result.cache
 public/foto-instruktur/*
 storage/public/foto-instruktur/*
+storage/public/foto-kursus/*

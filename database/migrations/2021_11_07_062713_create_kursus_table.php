@@ -13,17 +13,17 @@ class CreateKursusTable extends Migration
      */
     public function up()
     {
-        Schema::create('kursus', function (Blueprint $table) {
+        Schema::create('kursuses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('instruktur_id');
             $table->string('judul_kursus')->notNullable();
             $table->string('foto')->notNullable();
             $table->string('harga_kursus')->notNullable();
-            $table->string('tipe_kursus')->notNullable();
+            $table->enum('tipe_kursus', ['premium', 'free']);
             $table->timestamps();
         });
 
-        Schema::table('kursus', function(Blueprint $kolom){
+        Schema::table('kursuses', function(Blueprint $kolom){
             $kolom->foreign('instruktur_id')
             ->references('id')
             ->on('instrukturs');
@@ -37,6 +37,6 @@ class CreateKursusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kursus');
+        Schema::dropIfExists('kursuses');
     }
 }
