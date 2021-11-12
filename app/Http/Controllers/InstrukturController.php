@@ -6,6 +6,7 @@ use App\Models\Instruktur;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\Environment\Console;
 
 class InstrukturController extends Controller
@@ -84,6 +85,23 @@ class InstrukturController extends Controller
         return $res;
     }
 
+    public function getAllInstruktur()
+    {
+        if (Auth::user()->role != 'basic'){
+            return response()->json([
+                'success' => true,
+                'message' => 'List All Instruktur',
+                'users' =>  Instruktur::OrderBy('id', 'DESC')->paginate(2),
+            ], 200);
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access to that resource is forbidden'
+            ], 403);
+        }
+        
+    }
+
     public function getInstruktur($id)
     {
         try {
@@ -114,6 +132,47 @@ class InstrukturController extends Controller
             ], 404);
         }
 
+    }
+
+    public function updateInstruktur(Request $request, $id){
+        
+        $this->validate($request, [
+            'nama'  => 'required|string',
+            'keterangan' => 'required|string',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+        ]);
+
+        $updateInstruktur= Instruktur::find($id);
+
+
+        $updateInstruktur->nama = $request->nama;
+        $updateInstruktur->keterangan = $request->keterangan;
+
+        try {
+            //Cek duplicate input data
+            $duplicate_data = $updateInstruktur->where( 'id', $updateInstruktur->id )->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $updateInstruktur,
+
+                ], 425);
+            } else {
+
+                $updateInstruktur->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully Update Instruktur',
+                'user' => $updateInstruktur, 
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access to that resource is forbidden'
+            ], 403);
+        }
     }
 
 
