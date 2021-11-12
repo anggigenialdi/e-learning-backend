@@ -139,7 +139,7 @@ class InstrukturController extends Controller
         $this->validate($request, [
             'nama'  => 'required|string',
             'keterangan' => 'required|string',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            // 'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
 
         $updateInstruktur= Instruktur::find($id);
@@ -150,7 +150,7 @@ class InstrukturController extends Controller
 
         try {
             //Cek duplicate input data
-            $duplicate_data = $updateInstruktur->where( 'id', $updateInstruktur->id )->first();
+            $duplicate_data = $updateInstruktur->where( 'nama', $updateInstruktur->nama )->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
