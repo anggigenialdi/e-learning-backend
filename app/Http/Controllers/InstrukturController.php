@@ -84,5 +84,38 @@ class InstrukturController extends Controller
         return $res;
     }
 
+    public function getInstruktur($id)
+    {
+        try {
+            $instruktur = Instruktur::findOrFail($id);
+
+            //cek user login jika bukan maka data tidak akan ditampilkan
+            if ( Auth::user()->role != 'basic') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Instruktur',
+                    'data' => ([
+                        $instruktur
+                    ])
+                ], 200);
+            } else {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Access to that resource is forbidden!'
+                ], 403);
+            }           
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'user not found!'
+            ], 404);
+        }
+
+    }
+
+
 
 }
