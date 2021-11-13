@@ -42,5 +42,5 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 });
 
 //Endpoint show image instruktur
-$router->get('/user/avatar/{name}', 'InstrukturController@get_avatar');
+$router->get('/instruktur/foto/{name}', 'InstrukturController@getFoto');
 
