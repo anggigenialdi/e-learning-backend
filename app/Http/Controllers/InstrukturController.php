@@ -72,15 +72,15 @@ class InstrukturController extends Controller
         }
     }
 
-    public function get_avatar($name)
+    public function getFoto($name)
     {
-        $avatar_path = storage_path('/public/foto-instruktur') . '/' . $name;
-    if (file_exists($avatar_path)) {
-        $file = file_get_contents($avatar_path);
-        return response($file, 200)->header('Content-Type', 'image/jpeg');
-        }
-    $res['success'] = false;
-        $res['message'] = "Avatar not found";
+        $foto_path = storage_path('/public/foto-instruktur') . '/' . $name;
+        if (file_exists($foto_path)) {
+            $file = file_get_contents($foto_path);
+            return response($file, 200)->header('Content-Type', 'image/jpeg');
+            }
+        $res['success'] = false;
+            $res['message'] = "Foto not found";
         
         return $res;
     }
