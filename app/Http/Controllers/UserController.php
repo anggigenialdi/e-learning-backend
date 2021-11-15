@@ -166,24 +166,20 @@ class UserController extends Controller
                 ], 403);
             } else {
                 //get user profile 
-                $user_auth = Profile::findOrFail($id)
-                ->user::with([
-                        'user_profile'  => fn ($query) => $query
-                        ->select(
-                            'user_id',
-                            'no_kontak',
-                            'alamat',
-                            'no_rekening',
-                            'bank')
-                    ])->findOrFail($id);
+                $user_auth = Profile::findOrFail($id)->user::with(['user_profile' => function ($query) {
+                    $query ->select(
+                        'user_id',
+                        'no_kontak',
+                        'alamat',
+                        'no_rekening',
+                        'bank');
+                }])->findOrFail($id);
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'user' => ([
-                    $user_auth
-                ])
+                'user' => $user_auth
             ], 200);
 
         } catch (\Exception $e) {
