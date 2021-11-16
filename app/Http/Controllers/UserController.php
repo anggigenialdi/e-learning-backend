@@ -166,24 +166,26 @@ class UserController extends Controller
                 ], 403);
             } else {
                 //get user profile 
-                $user_auth = Profile::findOrFail($id)
-                ->user::with([
-                        'user_profile'  => fn ($query) => $query
-                        ->select(
-                            'user_id',
-                            'no_kontak',
-                            'alamat',
-                            'no_rekening',
-                            'bank')
-                    ])->findOrFail($id);
+                $user_auth = User::findOrFail($id)->get();
+                $data = [];
+                $data_user = [];
+                
+                foreach ($user_auth as $dataAuth){
+                    $data['id'] = $dataAuth->id;
+                    $data['nama'] = $dataAuth->nama;
+                    $data['email'] = $dataAuth->email;
+                    $data['no_kontak'] = $dataAuth->user_profile->no_kontak;
+                    $data['alamat'] = $dataAuth->user_profile->alamat;
+                    $data['no_rekening'] = $dataAuth->user_profile->no_rekening;
+                    $data['bank'] = $dataAuth->user_profile->bank;
+                    array_push ( $data_user, $data);
+                }
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'user' => ([
-                    $user_auth
-                ])
+                'data user' => $data_user,
             ], 200);
 
         } catch (\Exception $e) {
