@@ -35,9 +35,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     // Instruktur 
     $router->post('add-instruktur', 'InstrukturController@postInstruktur');
-    // Kursus 
-    $router->post('add-kursus', 'KursusController@postKursus');
+
+    $router->get('get-instruktur/{id}', 'InstrukturController@getInstruktur');
+    $router->get('get-all-instruktur', 'InstrukturController@getAllInstruktur');
+    $router->put('update-instruktur/{id}', 'InstrukturController@updateInstruktur');
 });
 
 //Endpoint show image instruktur
-$router->get('/user/avatar/{name}', 'InstrukturController@get_avatar');
+$router->get('/instruktur/foto/{name}', 'InstrukturController@getFoto');
+
