@@ -30,8 +30,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->get('user-login', 'UserController@profile');
     $router->get('profile/{id}', 'UserController@singleProfile');
     $router->put('update-user', 'UserController@updateUser');
-
-
+    
     // Matches "/api/v1/users
     $router->get('users', 'UserController@allUsers');
 });
