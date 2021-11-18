@@ -67,6 +67,7 @@ class UserController extends Controller
             ], 409);
         }
     }
+
     public function postProfile(Request $request)
     {
         $this->validate($request, [
@@ -86,7 +87,7 @@ class UserController extends Controller
         ]);
 
         // Hak akses input data user login atau admin
-        if ( (Auth::user()->role === 'admin') || (Auth::id() == $data->user_id) ){
+        if ( (Auth::user()->role != 'basic') || (Auth::user()->id == $data->user_id) ){
             try {
 
                 //Cek duplicate input data
@@ -140,7 +141,7 @@ class UserController extends Controller
 
     public function allUsers()
     {
-        if (Auth::user()->role === 'admin'){
+        if ( Auth::user()->role != 'basic' ){
             return response()->json([
                 'success' => true,
                 'message' => 'List All User',
@@ -159,31 +160,33 @@ class UserController extends Controller
     {
         try {
             //cek user login jika bukan maka data tidak akan ditampilkan
-            if (Auth::id() != $id ) {
+            if (Auth::user()->id != $id ) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Access to that resource is forbidden!'
                 ], 403);
             } else {
                 //get user profile 
-                $user_auth = Profile::findOrFail($id)
-                ->user::with([
-                        'user_profile'  => fn ($query) => $query
-                        ->select(
-                            'user_id',
-                            'no_kontak',
-                            'alamat',
-                            'no_rekening',
-                            'bank')
-                    ])->findOrFail($id);
+                $user_auth = User::findOrFail($id)->get();
+                $data = [];
+                $data_user = [];
+                
+                foreach ($user_auth as $dataAuth){
+                    $data['id'] = $dataAuth->id;
+                    $data['nama'] = $dataAuth->nama;
+                    $data['email'] = $dataAuth->email;
+                    $data['no_kontak'] = $dataAuth->user_profile->no_kontak;
+                    $data['alamat'] = $dataAuth->user_profile->alamat;
+                    $data['no_rekening'] = $dataAuth->user_profile->no_rekening;
+                    $data['bank'] = $dataAuth->user_profile->bank;
+                    array_push ( $data_user, $data);
+                }
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'user' => ([
-                    $user_auth
-                ])
+                'data user' => $data_user,
             ], 200);
 
         } catch (\Exception $e) {
@@ -194,6 +197,59 @@ class UserController extends Controller
             ], 404);
         }
 
+    }
+    
+
+    public function updateUser(Request $request)
+    {
+        $this->validate($request, [
+            'no_kontak' => 'required',
+            'alamat' => 'required|string',
+            'no_rekening' => 'required',
+            'bank' => 'required|string',
+        ]);
+
+        try {
+            $updateProfile = Profile::where('user_id', Auth::user()->id)->first();
+
+            if (!$updateProfile){
+                $updateProfile = new Profile;
+                $updateProfile->user_id = Auth::user()->id;
+            }
+            $updateProfile->no_kontak = $request->no_kontak;
+            $updateProfile->alamat = $request->alamat;
+            $updateProfile->no_rekening = $request->no_rekening;
+            $updateProfile->bank = $request->bank;
+
+            //Cek duplicate input data
+            $existing_data = $updateProfile->where( 'no_kontak', $updateProfile->no_kontak )->first();
+            $existing_noreq = $updateProfile->where( 'no_rekening', $updateProfile->no_rekening )->first();
+            if ( $existing_data || $existing_noreq ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user already used',
+                    'data' => $existing_data, 
+                    'data' => $existing_noreq,
+                    'data' => $updateProfile,
+
+                ], 425);
+            } else {
+
+                $updateProfile->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully update profile',
+                'user' => $updateProfile, 
+                ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Update profile Failed or dont have acount'
+            ], 409);
+        }
     }
 
 
