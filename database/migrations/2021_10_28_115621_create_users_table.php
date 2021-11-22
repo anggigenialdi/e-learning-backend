@@ -26,8 +26,8 @@ class CreateUsersTable extends Migration
         
         DB::table('users')->insert(array(
             'id' => '1',
-            'nama' => 'anggi',
-            'email' => 'anggi@gmail.com',
+            'nama' => 'admin',
+            'email' => 'admin@kursus.com',
             'password' => '$2y$10$m6JLzkjryFUCetmj3JLISuccF1PeqfhnHeysqmtW0CMq8VDbZEhBG',
             'role' => 'admin'
         ));

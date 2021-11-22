@@ -200,7 +200,7 @@ class UserController extends Controller
     }
     
 
-    public function updateUser(Request $request)
+    public function updateUser(Request $request, $id)
     {
         $this->validate($request, [
             'no_kontak' => 'required',
@@ -210,12 +210,8 @@ class UserController extends Controller
         ]);
 
         try {
-            $updateProfile = Profile::where('user_id', Auth::user()->id)->first();
+            $updateProfile= Profile::find($id);
 
-            if (!$updateProfile){
-                $updateProfile = new Profile;
-                $updateProfile->user_id = Auth::user()->id;
-            }
             $updateProfile->no_kontak = $request->no_kontak;
             $updateProfile->alamat = $request->alamat;
             $updateProfile->no_rekening = $request->no_rekening;
@@ -224,16 +220,20 @@ class UserController extends Controller
             //Cek duplicate input data
             $existing_data = $updateProfile->where( 'no_kontak', $updateProfile->no_kontak )->first();
             $existing_noreq = $updateProfile->where( 'no_rekening', $updateProfile->no_rekening )->first();
-            if ( $existing_data || $existing_noreq ) {
+            if ( $existing_data) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'user already used',
-                    'data' => $existing_data, 
-                    'data' => $existing_noreq,
-                    'data' => $updateProfile,
-
+                    'message' => 'no kontak sudah digunakan',
                 ], 425);
-            } else {
+
+            } else if ( $existing_noreq ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Rekening sudah digunakan',
+                ], 425);
+
+            } 
+            else {
 
                 $updateProfile->save();
             }
@@ -247,7 +247,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Update profile Failed or dont have acount'
+                'message' => 'Update profile Failed'
             ], 409);
         }
     }
