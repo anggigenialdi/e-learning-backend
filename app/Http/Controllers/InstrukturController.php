@@ -62,7 +62,7 @@ class InstrukturController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully complete Instruktur',
-                'user' => $add_Instruktur, 
+                'data' => $add_Instruktur, 
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -165,7 +165,7 @@ class InstrukturController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully Update Instruktur',
-                'user' => $updateInstruktur, 
+                'data' => $updateInstruktur, 
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
