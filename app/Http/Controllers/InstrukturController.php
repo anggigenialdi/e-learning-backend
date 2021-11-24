@@ -30,7 +30,7 @@ class InstrukturController extends Controller
 
         if ($request->hasFile('foto')){
             $file = $request->file('foto');
-            $allowedFileExtention = ['png','jpeg','jpg','svg','gif'];
+            $allowedFileExtention = ['png','jpeg','jpg','svg','gif','PNG'];
             $extention = $file->getClientOriginalExtension();
             $check = in_array($extention, $allowedFileExtention);
 
@@ -47,7 +47,7 @@ class InstrukturController extends Controller
 
         try {
             //Cek duplicate input data
-            $duplicate_data = $add_Instruktur->where( 'keterangan', $add_Instruktur->keterangan )->first();
+            $duplicate_data = $add_Instruktur->where( 'nama', $add_Instruktur->nama )->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
