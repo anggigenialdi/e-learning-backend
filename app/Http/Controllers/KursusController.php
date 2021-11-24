@@ -64,7 +64,7 @@ class KursusController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully complete Kursus',
-                'user' => $add_Kursus, 
+                'data' => $add_Kursus, 
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -85,6 +85,51 @@ class KursusController extends Controller
         $res['message'] = "Avatar not found";
         
         return $res;
+    }
+
+    public function updateKursus(Request $request, $id){
+        
+        $this->validate($request, [
+            'instruktur_id'  => 'required|string',
+            'judul_kursus'  => 'required|string',
+            'harga_kursus' => 'required|string',
+            'tipe_kursus' => 'required|string',
+            // 'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+        ]);
+
+        $updateKursus= Kursus::find($id);
+
+
+        $updateKursus->instruktur_id = $request->instruktur_id;
+        $updateKursus->judul_kursus = $request->judul_kursus;
+        $updateKursus->harga_kursus = $request->harga_kursus;
+        $updateKursus->tipe_kursus = $request->tipe_kursus;
+
+        try {
+            //Cek duplicate input data
+            $duplicate_data = $updateKursus->where( 'judul_kursus', $updateKursus->judul_kursus )->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $updateKursus,
+
+                ], 425);
+            } else {
+
+                $updateKursus->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully Update Kursus',
+                'data' => $updateKursus, 
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access to that resource is forbidden'
+            ], 403);
+        }
     }
 
 
