@@ -91,7 +91,7 @@ class InstrukturController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'List All Instruktur',
-                'users' =>  Instruktur::OrderBy('id', 'DESC')->paginate(2),
+                'data' =>  Instruktur::OrderBy('id', 'DESC')->paginate(2),
             ], 200);
         }else {
             return response()->json([
