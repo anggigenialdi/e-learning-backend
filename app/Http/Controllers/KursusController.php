@@ -13,9 +13,47 @@ class KursusController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['index']]);
     }
 
+    public function index(){
+        $kursus = Kursus::orderBy('created_at', 'asc')->get();
+
+        $data = [];
+        $data_kursus = [];
+        
+        $no = 0;
+        foreach ($kursus as $kur) {
+            $no++;
+            $data['nama_instruktur'] = $kur->instruktur->nama;
+            $data['nama_kursus'] = $kur->judul_kursus;
+            $data['foto_instruktur'] = $kur->instruktur->foto;
+            $data['foto_kursus'] = $kur->foto;
+            $data['harga'] = $kur->harga_kursus;
+            $data['tipe_kursus'] = $kur->tipe_kursus;
+            array_push($data_kursus, $data);
+        }
+
+        if ($kursus) {
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'kursus berhasil diambil',
+                    'data' => $data_kursus,
+                ],
+                201
+            );
+        } else {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'kursus gagal diambil',
+                    'data' => '',
+                ],
+                400
+            );
+        }
+    }
     public function postKursus(Request $request)
     {
         $this->validate($request, [
@@ -49,7 +87,7 @@ class KursusController extends Controller
 
         try {
             //Cek duplicate input data
-            $duplicate_data = $add_Kursus->where( 'instruktur_id', $add_Kursus->instruktur_id )->first();
+            $duplicate_data = $add_Kursus->where( 'judul_kursus', $add_Kursus->judul_kursus )->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
