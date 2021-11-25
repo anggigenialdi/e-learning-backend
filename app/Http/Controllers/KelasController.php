@@ -81,20 +81,9 @@ class KelasController extends Controller
                 $updateKelas->kursus_id = $request->kursus_id;
                 $updateKelas->judul = $request->judul;
                 $updateKelas->posisi = $request->posisi;
-                
-                // Cek duplikat data
-                $duplicate_data = $updateKelas->where( 'kursus_id', $updateKelas->kursus_id )->first();
-                if ( $duplicate_data ) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Duplicate data',
-                        'data' => $updateKelas,
 
-                    ], 425);
-                } else {
+                $updateKelas->save();
 
-                    $updateKelas->save();
-                }
                 return response()->json([
                     'success' => true,
                     'message' => 'Successfully Update Kelas',
