@@ -9,24 +9,20 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 
-class Kursus extends Model implements AuthenticatableContract, AuthorizableContract
+class Kelas extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'instruktur_id', 'judul_kursus', 'foto', 'harga_kursus', 'tipe_kursus'
+        'kursus_id', 'judul', 'posisi'
     ];
 
     protected $hidden = [
         'id',
     ];
 
-    public function instruktur(){
-        return $this->belongsTo(Instruktur::class);
-    }
-
-    public function kelas(){
-        return $this->hasMany(Kelas::class, 'kursus_id');
+    public function kursus(){
+        return $this->belongsTo(Kursus::class);
     }
 
 }
