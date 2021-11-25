@@ -45,7 +45,7 @@ class MateriController extends Controller
                 $addMateri->materi_selanjutnya = $request->materi_selanjutnya;
                 
                 // Cek duplikat data
-                $duplicate_data = $addMateri->where( 'kelas_id', $addMateri->kelas_id )->first();
+                $duplicate_data = $addMateri->where( 'judul', $addMateri->judul )->first();
                 if ( $duplicate_data ) {
                     return response()->json([
                         'success' => false,

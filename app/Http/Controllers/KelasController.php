@@ -36,7 +36,7 @@ class KelasController extends Controller
                 $addKelas->posisi = $request->posisi;
                 
                 // Cek duplikat data
-                $duplicate_data = $addKelas->where( 'kursus_id', $addKelas->kursus_id )->first();
+                $duplicate_data = $addKelas->where( 'judul', $addKelas->judul )->first();
                 if ( $duplicate_data ) {
                     return response()->json([
                         'success' => false,
