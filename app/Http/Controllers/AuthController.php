@@ -24,7 +24,20 @@ class AuthController extends Controller
             $user->email    = $request->input('email');
             $plainPassword  = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
-            $user->save();           
+            
+            // Cek duplikat data
+            $duplicate_data = $user->where( 'email', $user->email )->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $user,
+
+                ], 425);
+            } else {
+
+                $user->save();
+            } 
 
             //return successful response
             return response()->json([
