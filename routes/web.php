@@ -44,6 +44,10 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Kursus    
     $router->post('add-kursus', 'KursusController@postKursus');
     $router->put('update-kursus/{id}', 'KursusController@updateKursus');
+    
+    //Kelas
+    $router->post('add-kelas', 'KelasController@postKelas');
+    $router->put('update-kelas/{id}', 'KelasController@updateKelas');
 });
 
 //Endpoint show image instruktur
