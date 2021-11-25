@@ -42,6 +42,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->put('update-instruktur/{id}', 'InstrukturController@updateInstruktur');
 
     //Kursus    
+    $router->get('kursus', 'KursusController@index');
     $router->post('add-kursus', 'KursusController@postKursus');
     $router->put('update-kursus/{id}', 'KursusController@updateKursus');
     
