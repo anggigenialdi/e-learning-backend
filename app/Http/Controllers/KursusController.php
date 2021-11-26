@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kursus;
+use App\Models\Kelas;
 use App\Models\Instruktur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class KursusController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index']]);
+        $this->middleware('auth', ['except' => ['index','getKursusById']]);
     }
 
     public function index(){
@@ -33,7 +34,6 @@ class KursusController extends Controller
             $data['tipe_kursus'] = $kur->tipe_kursus;
             array_push($data_kursus, $data);
         }
-
         if ($kursus) {
             return response()->json(
                 [
@@ -53,6 +53,51 @@ class KursusController extends Controller
                 400
             );
         }
+    }
+    public function getKursusById($id){
+        $kursus = Kursus::where('id', $id)->get();
+        $kelas = Kelas::where('kursus_id', $id)->get();
+
+        $data = [];
+        $data_kursus = [];
+        
+        $no = 0;
+        foreach ($kursus as $kur) {
+            $no++;
+            $data['nama_instruktur'] = $kur->instruktur->nama;
+            $data['nama_kursus'] = $kur->judul_kursus;
+            $data['foto_instruktur'] = $kur->instruktur->foto;
+            $data['foto_kursus'] = $kur->foto;
+            $data['harga'] = $kur->harga_kursus;
+            $data['tipe_kursus'] = $kur->tipe_kursus;
+            array_push($data_kursus, $data);
+        }
+        foreach($kelas as $kel){
+            $data['materi'] = $kel->materi;
+        }
+        if ($kursus) {
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'kursus berhasil diambil',
+                    'data' => [
+                        'data' => $data_kursus,
+                        'data_kelas' =>$kelas,
+                        ]
+                        ,
+                ],
+                201
+            );
+        } else {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'kursus gagal diambil',
+                    'data' => '',
+                ],
+                400
+            );
+        }    
     }
     public function postKursus(Request $request)
     {
