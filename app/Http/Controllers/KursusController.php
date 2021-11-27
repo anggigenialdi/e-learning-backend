@@ -152,7 +152,7 @@ class KursusController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
     }
@@ -210,7 +210,7 @@ class KursusController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
     }

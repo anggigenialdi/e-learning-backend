@@ -67,7 +67,7 @@ class InstrukturController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
     }
@@ -128,7 +128,7 @@ class InstrukturController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'user not found!'
+                'message' => $e
             ], 404);
         }
 
@@ -170,7 +170,7 @@ class InstrukturController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
     }

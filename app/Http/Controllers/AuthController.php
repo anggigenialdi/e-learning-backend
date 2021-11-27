@@ -50,7 +50,7 @@ class AuthController extends Controller
             //return error message
             return response()->json([
                 'success' => false,
-                'message' => 'User Registration Failed!'
+                'message' => $e
             ], 409);
         }
 
