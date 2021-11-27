@@ -63,7 +63,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Complete profile Failed or dont have acount'
+                'message' => $e
             ], 409);
         }
     }
@@ -119,7 +119,7 @@ class UserController extends Controller
                 //return error message
                 return response()->json([
                     'success' => false,
-                    'message' => 'Complete profile Failed or dont have acount'
+                    'message' => $e
                 ], 409);
             }
         } else {
@@ -163,15 +163,17 @@ class UserController extends Controller
             if (Auth::user()->id != $id ) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Access to that resource is forbidden!'
+                    'message' => 'Tidak memiliki akses'
                 ], 403);
             } else {
                 //get user profile 
-                $user_auth = User::findOrFail($id)->get();
+
+
+                $user = User::where('id', $id)->get();
                 $data = [];
                 $data_user = [];
                 
-                foreach ($user_auth as $dataAuth){
+                foreach ($user as $dataAuth){
                     $data['id'] = $dataAuth->id;
                     $data['nama'] = $dataAuth->nama;
                     $data['email'] = $dataAuth->email;
@@ -186,15 +188,15 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User Profile',
-                'data user' => $data_user,
+                'data' => $data_user
             ], 200);
 
         } catch (\Exception $e) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'user not found!'
-            ], 404);
+                'message' => $e
+            ], 400);
         }
 
     }
@@ -247,7 +249,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Update profile Failed'
+                'message' => $e
             ], 409);
         }
     }

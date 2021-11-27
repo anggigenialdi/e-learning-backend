@@ -37,6 +37,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Profile::class, 'user_id');
     }
 
+    public function kursus_saya(){
+        return $this->hasOne(Kursus_saya::class, 'user_id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

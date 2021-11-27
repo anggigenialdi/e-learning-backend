@@ -58,7 +58,7 @@ class KelasController extends Controller
         }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
 
@@ -94,7 +94,7 @@ class KelasController extends Controller
         }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access to that resource is forbidden'
+                'message' => $e
             ], 403);
         }
 

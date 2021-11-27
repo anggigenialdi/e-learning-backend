@@ -29,4 +29,8 @@ class Kursus extends Model implements AuthenticatableContract, AuthorizableContr
         return $this->hasMany(Kelas::class, 'kursus_id');
     }
 
+    public function kursus_Saya(){
+        return $this->hasMany(Kursus_saya::class, 'kursus_id');
+    }
+
 }
