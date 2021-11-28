@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kursus;
 use App\Models\Kelas;
 use App\Models\Instruktur;
+use App\Models\Kursus_saya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use SebastianBergmann\Environment\Console;
@@ -54,41 +55,55 @@ class KursusController extends Controller
             );
         }
     }
-    public function getKursusById($id){
-        $kursus = Kursus::where('id', $id)->get();
-        $kelas = Kelas::where('kursus_id', $id)->get();
+    public function getKursusSaya($idKursus,$idUser){
+        $kursus_saya = Kursus_saya::where('kursus_id', $idKursus)->where('user_id', $idUser)->first();
 
-        $data = [];
-        $data_kursus = [];
-        
-        $no = 0;
-        foreach ($kursus as $kur) {
-            $no++;
-            $data['nama_instruktur'] = $kur->instruktur->nama;
-            $data['nama_kursus'] = $kur->judul_kursus;
-            $data['foto_instruktur'] = $kur->instruktur->foto;
-            $data['foto_kursus'] = $kur->foto;
-            $data['harga'] = $kur->harga_kursus;
-            $data['tipe_kursus'] = $kur->tipe_kursus;
-            array_push($data_kursus, $data);
-        }
-        foreach($kelas as $kel){
-            $data['materi'] = $kel->materi;
-        }
-        if ($kursus) {
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'kursus berhasil diambil',
-                    'data' => [
-                        'data' => $data_kursus,
-                        'data_kelas' =>$kelas,
-                        ]
-                        ,
-                ],
-                201
-            );
-        } else {
+        $kursus = Kursus::where('id', $idKursus)->get();
+        $kelas = Kelas::where('kursus_id', $idKursus)->get();
+
+        if($kursus_saya){
+            $data = [];
+            $data_kursus = [];
+            
+            $no = 0;
+            foreach ($kursus as $kur) {
+                $no++;
+                $data['nama_instruktur'] = $kur->instruktur->nama;
+                $data['nama_kursus'] = $kur->judul_kursus;
+                $data['foto_instruktur'] = $kur->instruktur->foto;
+                $data['foto_kursus'] = $kur->foto;
+                $data['harga'] = $kur->harga_kursus;
+                $data['tipe_kursus'] = $kur->tipe_kursus;
+                array_push($data_kursus, $data);
+            }
+            foreach($kelas as $kel){
+                $data['materi'] = $kel->materi;
+            }
+            if ($kursus) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'kursus berhasil diambil',
+                        'data' => [
+                            'data' => $data_kursus,
+                            'data_kelas' =>$kelas,
+                            ]
+                            ,
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'kursus gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+        }   
+        else{
             return response()->json(
                 [
                     'success' => false,
@@ -97,7 +112,46 @@ class KursusController extends Controller
                 ],
                 400
             );
-        }    
+        }
+    }
+    public function detailKursus($id){
+
+        $kursus = Kursus::where('id', $id)->get();
+        $kelas = Kelas::where('kursus_id', $id)->get();
+
+            $data = [];
+            $data_kursus = [];
+            
+            $no = 0;
+            foreach ($kursus as $kur) {
+                $no++;
+                $data['nama_instruktur'] = $kur->instruktur->nama;
+                $data['nama_kursus'] = $kur->judul_kursus;
+                $data['foto_instruktur'] = $kur->instruktur->foto;
+                $data['foto_kursus'] = $kur->foto;
+                $data['harga'] = $kur->harga_kursus;
+                $data['tipe_kursus'] = $kur->tipe_kursus;
+                array_push($data_kursus, $data);
+            }
+            if ($kursus) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'kursus berhasil diambil',
+                        'data' => $data_kursus,
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'kursus gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
     }
     public function postKursus(Request $request)
     {
