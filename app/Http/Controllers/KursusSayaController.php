@@ -57,4 +57,43 @@ class KursusSayaController extends Controller
 
 
     }
+    public function updateKursusSaya(Request $request, $id){
+        
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'kursus_id' => 'required|string',
+        ]);
+
+        $updateKursusSaya= Kursus_saya::find($id);
+
+
+        $updateKursusSaya->user_id = $request->user_id;
+        $updateKursusSaya->kursus_id = $request->kursus_id;
+
+        try {
+            //Cek duplicate input data
+            $duplicate_data = $updateKursusSaya->where( 'kursus_id', $updateKursusSaya->kursus_id )->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $updateKursusSaya,
+
+                ], 425);
+            } else {
+
+                $updateKursusSaya->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully Update Kursus',
+                'data' => $updateKursusSaya, 
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e
+            ], 403);
+        }
+    }
 }

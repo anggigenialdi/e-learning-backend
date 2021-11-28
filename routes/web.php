@@ -49,7 +49,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     //Kursus Saya
     $router->post('add-kursus-saya', 'KursusSayaController@postKursusSaya');
-
+    $router->put('update-kursus-saya/{id}', 'KursusSayaController@updateKursusSaya');
     
     //Kelas
     $router->post('add-kelas', 'KelasController@postKelas');
