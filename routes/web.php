@@ -44,12 +44,13 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Kursus    
     $router->get('kursus', 'KursusController@index');
     $router->get('kursus/{id}', 'KursusController@detailKursus');
-    $router->get('kursus/{idKursus}/{idUser}', 'KursusController@getKursusSaya');
+    $router->get('kursus/{idKursus}/{idUser}', 'KursusController@detailKursusSaya');
     $router->post('add-kursus', 'KursusController@postKursus');
     $router->put('update-kursus/{id}', 'KursusController@updateKursus');
 
     //Kursus Saya
     $router->post('add-kursus-saya', 'KursusSayaController@postKursusSaya');
+    $router->get('kursus-saya/{id}', 'KursusSayaController@kursusSaya');
     $router->put('update-kursus-saya/{id}', 'KursusSayaController@updateKursusSaya');
     
     //Kelas

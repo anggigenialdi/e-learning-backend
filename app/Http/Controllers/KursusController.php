@@ -27,6 +27,7 @@ class KursusController extends Controller
         $no = 0;
         foreach ($kursus as $kur) {
             $no++;
+            $data['id_kursus'] = $kur->id;
             $data['nama_instruktur'] = $kur->instruktur->nama;
             $data['nama_kursus'] = $kur->judul_kursus;
             $data['foto_instruktur'] = $kur->instruktur->foto;
@@ -55,7 +56,7 @@ class KursusController extends Controller
             );
         }
     }
-    public function getKursusSaya($idKursus,$idUser){
+    public function detailKursusSaya($idKursus,$idUser){
         $kursus_saya = Kursus_saya::where('kursus_id', $idKursus)->where('user_id', $idUser)->first();
 
         $kursus = Kursus::where('id', $idKursus)->get();
