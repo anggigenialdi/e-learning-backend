@@ -31,7 +31,7 @@ class KursusSayaController extends Controller
             $addKursusSaya->kursus_id = $request->kursus_id;
             
             // Cek duplikat data
-            $duplicate_data = $addKursusSaya->where( 'kursus_id', $addKursusSaya->kursus_id )->first();
+            $duplicate_data = $addKursusSaya->where( 'kursus_id', $addKursusSaya->kursus_id)->where('user_id',$addKursusSaya->user_id)->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,

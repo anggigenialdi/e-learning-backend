@@ -15,7 +15,7 @@ class KursusController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index','getKursusById']]);
+        $this->middleware('auth', ['except' => ['index','detailKursus']]);
     }
 
     public function index(){
