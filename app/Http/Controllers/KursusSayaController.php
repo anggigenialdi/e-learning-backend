@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kursus_saya;
+use App\Models\Kursus;
 use Illuminate\Http\Request;
 
 class KursusSayaController extends Controller
@@ -14,7 +15,7 @@ class KursusSayaController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['kursusSaya']]);
     }
 
     public function postKursusSaya(Request $request) {
@@ -56,6 +57,45 @@ class KursusSayaController extends Controller
         }
 
 
+    }
+    public function kursusSaya($id){
+
+        $kursus = Kursus_saya::where('user_id', $id)->get();
+
+        // foreach($kursus_saya as $k_saya){
+        //     $kursus = Kursus::where('id', $k_saya->kursus_id)->get();
+
+            $data = [];
+            $data_kursus = [];
+            
+            $no = 0;
+            foreach ($kursus as $kur) {
+                $no++;
+                $data['id_kursus'] = $kur->kursus->id;
+                $data['nama_kursus'] = $kur->kursus->judul_kursus;
+                $data['tipe_kursus'] = $kur->kursus->tipe_kursus;
+                array_push($data_kursus, $data);
+            }
+            if ($kursus) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'kursus berhasil diambil',
+                        'data' => $data_kursus,
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'kursus gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+        // }
     }
     public function updateKursusSaya(Request $request, $id){
         
