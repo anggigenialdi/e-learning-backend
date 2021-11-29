@@ -59,6 +59,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Materi
     $router->post('add-materi', 'MateriController@postMateri');
     $router->put('update-materi/{id}', 'MateriController@updateMateri');
+
+    //Komentar
+    $router->post('add-komentar', 'KomentarController@postKomentar');
+    $router->put('update-komentar/{id}', 'KomentarController@updateKomentar');
+
 });
 
 //Endpoint show image instruktur
