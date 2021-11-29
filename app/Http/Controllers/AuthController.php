@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -67,15 +68,41 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only(['email', 'password']);
-        
-        if (!$token = Auth::attempt($credentials)) {
+
+        $user = User::where('email',$request->email)->first();
+        if($user){
+            if (Hash::check($request->password, $user->password)) {
+                if (!$token = Auth::attempt($credentials)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unauthorized'
+                    ], 401);
+                }
+                else{
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Success',
+                        'data'=>[
+                            'data'=>$user,
+                            'token'=> $this->respondWithToken($token)->original['token'],
+                        ]
+                    ], 200);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Login Fail! Password Wrong',
+                    'data' => '',
+                ],400);
+            }
+        }
+        else{
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
+                'message' => 'Login Fail! Email Not Found',
+                'data' => '',
+            ],400);
         }
-
-        return $this->respondWithToken($token);
     }
 
 
