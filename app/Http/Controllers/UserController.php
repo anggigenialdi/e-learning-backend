@@ -158,7 +158,6 @@ class UserController extends Controller
 
     public function singleProfile($id)
     {
-        try {
             //cek user login jika bukan maka data tidak akan ditampilkan
             if (Auth::user()->id != $id ) {
                 return response()->json([
@@ -167,8 +166,6 @@ class UserController extends Controller
                 ], 403);
             } else {
                 //get user profile 
-
-
                 $user = User::where('id', $id)->get();
                 $data = [];
                 $data_user = [];
@@ -177,28 +174,26 @@ class UserController extends Controller
                     $data['id'] = $dataAuth->id;
                     $data['nama'] = $dataAuth->nama;
                     $data['email'] = $dataAuth->email;
-                    $data['no_kontak'] = $dataAuth->user_profile->no_kontak;
-                    $data['alamat'] = $dataAuth->user_profile->alamat;
-                    $data['no_rekening'] = $dataAuth->user_profile->no_rekening;
-                    $data['bank'] = $dataAuth->user_profile->bank;
+                    $data['no_kontak'] = $dataAuth->user_profile ? $dataAuth->user_profile->no_kontak :null;
+                    $data['alamat'] = $dataAuth->user_profile ?  $dataAuth->user_profile->alamat :null;
+                    $data['no_rekening'] = $dataAuth->user_profile? $dataAuth->user_profile->no_rekening :null;
+                    $data['bank'] = $dataAuth->user_profile ? $dataAuth->user_profile->bank :null;
                     array_push ( $data_user, $data);
                 }
+                if($user){
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'User Profile',
+                        'data' => $data_user
+                    ], 200);
+                }
+                else{  
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'error'
+                    ], 400);
+                }
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User Profile',
-                'data' => $data_user
-            ], 200);
-
-        } catch (\Exception $e) {
-
-            return response()->json([
-                'success' => false,
-                'message' => $e
-            ], 400);
-        }
-
     }
     
 

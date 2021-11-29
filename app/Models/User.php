@@ -41,6 +41,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Kursus_saya::class, 'user_id');
     }
 
+    public function komentar(){
+        return $this->hasOne(Komentar::class, 'user_id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
