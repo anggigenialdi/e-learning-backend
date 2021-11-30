@@ -16,6 +16,8 @@ class CreateKomentarTable extends Migration
         Schema::create('komentars', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('kursus_id');
             $table->unsignedBigInteger('materi_id');
             $table->string('isi_komentar');
             $table->timestamps();
@@ -25,6 +27,18 @@ class CreateKomentarTable extends Migration
             $kolom->foreign('user_id')
             ->references('id')
             ->on('users');
+        });
+
+        Schema::table('komentars', function(Blueprint $kolom){
+            $kolom->foreign('kelas_id')
+            ->references('id')
+            ->on('kelas');
+        });
+
+        Schema::table('komentars', function(Blueprint $kolom){
+            $kolom->foreign('kursus_id')
+            ->references('id')
+            ->on('kursuses');
         });
 
         Schema::table('komentars', function(Blueprint $kolom){

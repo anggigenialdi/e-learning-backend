@@ -14,7 +14,7 @@ class Komentar extends Model implements AuthenticatableContract, AuthorizableCon
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'user_id', 'materi_id', 'isi_komentar'
+        'kursus_id','kelas_id','user_id', 'materi_id', 'isi_komentar'
     ];
 
     protected $hidden = [
@@ -23,6 +23,13 @@ class Komentar extends Model implements AuthenticatableContract, AuthorizableCon
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function kelas(){
+        return $this->belongsTo(Kelas::class);
+    }
+    public function kursus(){
+        return $this->belongsTo(Kursus::class);
     }
 
     public function materi(){

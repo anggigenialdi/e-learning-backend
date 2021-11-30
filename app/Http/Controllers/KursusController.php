@@ -159,7 +159,7 @@ class KursusController extends Controller
         $this->validate($request, [
             'instruktur_id'  => 'required|string',
             'judul_kursus' => 'required|string|min:2',
-            'harga_kursus' => 'required|numeric|min:2',
+            'harga_kursus' => 'required|numeric',
             'tipe_kursus' => 'required|string|min:2',
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
