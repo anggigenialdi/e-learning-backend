@@ -24,7 +24,7 @@ class KomentarController extends Controller
                     return response()->json(
                         [
                             'success' => true,
-                            'message' => 'kursus berhasil diambil',
+                            'message' => 'komentar berhasil diambil',
                             'data' => $komentar
                         ],
                         201
@@ -33,7 +33,7 @@ class KomentarController extends Controller
                     return response()->json(
                         [
                             'success' => false,
-                            'message' => 'kursus gagal diambil',
+                            'message' => 'komentar gagal diambil',
                             'data' => '',
                         ],
                         400
@@ -45,6 +45,8 @@ class KomentarController extends Controller
         $this->validate($request, [
             'user_id'  => 'required|string',
             'materi_id' => 'required|string',
+            'kursus_id' => 'required|string',
+            'kelas_id' => 'required|string',
             'isi_komentar' => 'required|string',
         ]);
 
@@ -90,6 +92,8 @@ class KomentarController extends Controller
         $this->validate($request, [
             'user_id'  => 'required|string',
             'materi_id' => 'required|string',
+            'kursus_id' => 'required|string',
+            'kelas_id' => 'required|string',
             'isi_komentar' => 'required|string',
         ]);
 
@@ -98,6 +102,8 @@ class KomentarController extends Controller
             $updateKomentar = Komentar::find($id);
             $updateKomentar->user_id = $request->user_id;
             $updateKomentar->materi_id = $request->materi_id;
+            $updateKomentar->kelas_id = $request->kelas_id;
+            $updateKomentar->kursus_id = $request->kursus_id;
             $updateKomentar->isi_komentar = $request->isi_komentar;
             $updateKomentar->save();
             

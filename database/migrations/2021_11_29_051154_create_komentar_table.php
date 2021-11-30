@@ -30,6 +30,18 @@ class CreateKomentarTable extends Migration
         });
 
         Schema::table('komentars', function(Blueprint $kolom){
+            $kolom->foreign('kelas_id')
+            ->references('id')
+            ->on('kelas');
+        });
+
+        Schema::table('komentars', function(Blueprint $kolom){
+            $kolom->foreign('kursus_id')
+            ->references('id')
+            ->on('kursuses');
+        });
+
+        Schema::table('komentars', function(Blueprint $kolom){
             $kolom->foreign('materi_id')
             ->references('id')
             ->on('materis');

@@ -29,4 +29,8 @@ class Kelas extends Model implements AuthenticatableContract, AuthorizableContra
         return $this->hasMany(Materi::class, 'kelas_id');
     }
 
+    public function komentar(){
+        return $this->hasMany(Komentar::class, 'kelas_id');
+    }
+
 }

@@ -25,6 +25,13 @@ class Komentar extends Model implements AuthenticatableContract, AuthorizableCon
         return $this->belongsTo(User::class);
     }
 
+    public function kelas(){
+        return $this->belongsTo(Kelas::class);
+    }
+    public function kursus(){
+        return $this->belongsTo(Kursus::class);
+    }
+
     public function materi(){
         return $this->belongsTo(Materi::class);
     }
