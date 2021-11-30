@@ -16,6 +16,8 @@ class CreateKomentarTable extends Migration
         Schema::create('komentars', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('kursus_id');
             $table->unsignedBigInteger('materi_id');
             $table->string('isi_komentar');
             $table->timestamps();

@@ -14,7 +14,31 @@ class KomentarController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['getKomentar']]);
+    }
+
+    public function getKomentar($idKursus,$idKelas,$idMateri){
+            $komentar = Komentar::where('kursus_id', $idKursus)->where('kelas_id', $idKelas)->where('materi_id', $idMateri)->get();
+    
+            if($komentar){
+                    return response()->json(
+                        [
+                            'success' => true,
+                            'message' => 'kursus berhasil diambil',
+                            'data' => $komentar
+                        ],
+                        201
+                    );
+                } else {
+                    return response()->json(
+                        [
+                            'success' => false,
+                            'message' => 'kursus gagal diambil',
+                            'data' => '',
+                        ],
+                        400
+                    );
+                } 
     }
 
     public function postKomentar(Request $request) {
@@ -29,6 +53,8 @@ class KomentarController extends Controller
             $addKomentar = new Komentar;
             $addKomentar->user_id = $request->user_id;
             $addKomentar->materi_id = $request->materi_id;
+            $addKomentar->kursus_id = $request->kursus_id;
+            $addKomentar->kelas_id = $request->kelas_id;
             $addKomentar->isi_komentar = $request->isi_komentar;
             
             // Cek duplikat data

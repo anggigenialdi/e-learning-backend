@@ -64,6 +64,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Komentar
     $router->post('add-komentar', 'KomentarController@postKomentar');
     $router->put('update-komentar/{id}', 'KomentarController@updateKomentar');
+    $router->get('komentar/{idKursus}/{idKelas}/{idMateri}', 'KomentarController@getKomentar');
 
 });
 

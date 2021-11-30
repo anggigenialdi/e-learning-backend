@@ -14,7 +14,7 @@ class Komentar extends Model implements AuthenticatableContract, AuthorizableCon
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'user_id', 'materi_id', 'isi_komentar'
+        'kursus_id','kelas_id','user_id', 'materi_id', 'isi_komentar'
     ];
 
     protected $hidden = [
