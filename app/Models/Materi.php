@@ -17,9 +17,6 @@ class Materi extends Model implements AuthenticatableContract, AuthorizableContr
         'kelas_id', 'judul', 'deskripsi', 'link_video', 'posisi', 'materi_sebelumnya', 'materi_selanjutnya'
     ];
 
-    protected $hidden = [
-        'id',
-    ];
 
     public function kelas(){
         return $this->belongsTo(Kelas::class);

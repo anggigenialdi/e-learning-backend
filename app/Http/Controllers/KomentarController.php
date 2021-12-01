@@ -60,7 +60,7 @@ class KomentarController extends Controller
             $addKomentar->isi_komentar = $request->isi_komentar;
             
             // Cek duplikat data
-            $duplicate_data = $addKomentar->where( 'user_id', $addKomentar->user_id )->first();
+            $duplicate_data = $addKomentar->where( 'user_id', $addKomentar->user_id )->where( 'user_id', $addKomentar->user_id )->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
