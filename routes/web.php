@@ -66,6 +66,10 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->put('update-komentar/{id}', 'KomentarController@updateKomentar');
     $router->get('komentar/{idKursus}/{idKelas}/{idMateri}', 'KomentarController@getKomentar');
 
+    //Transaksi
+    $router->post('add-transaksi', 'TransaksiController@postTransaksi');
+    $router->put('update-transaksi/{id}', 'TransaksiController@updateTransaksi');
+
 });
 
 //Endpoint show image instruktur
