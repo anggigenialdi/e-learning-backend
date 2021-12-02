@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Kelas_selesai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -101,5 +102,73 @@ class KelasController extends Controller
     }
 
 
+    //Kelas Selesai
+    public function postKelasSelesai(Request $request) {
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'kelas_id' => 'required|string'
+        ]);
 
+        try{
+
+            $addKelasSelesai = new Kelas_selesai;
+            $addKelasSelesai->user_id = $request->user_id;
+            $addKelasSelesai->kelas_id = $request->kelas_id;
+            
+            // Cek duplikat data
+            $duplicate = $addKelasSelesai->where( 'kelas_id', $addKelasSelesai->kelas_id )->first();
+            if ( $duplicate ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data'
+
+                ], 425);
+            } else {
+                $addKelasSelesai->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully complete Kelas Selesai',
+                'data' => $addKelasSelesai, 
+            ], 201);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e
+            ], 403);
+        }
+
+
+    }
+
+    public function updateKelasSelesai(Request $request, $id) {
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'kelas_id' => 'required|string'
+        ]);
+
+        try{
+
+            $updateKelasSelesai = Kelas_selesai::find($id);
+            $updateKelasSelesai->user_id = $request->user_id;
+            $updateKelasSelesai->kelas_id = $request->kelas_id;
+            
+            // Cek duplikat data
+                $updateKelasSelesai->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully update Kelas Selesai',
+                'data' => $updateKelasSelesai, 
+            ], 201);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e
+            ], 403);
+        }
+
+
+    }
 }
