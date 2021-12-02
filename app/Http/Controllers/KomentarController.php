@@ -18,7 +18,7 @@ class KomentarController extends Controller
     }
 
     public function getKomentar($idKursus,$idKelas,$idMateri){
-            $komentar = Komentar::where('kursus_id', $idKursus)->where('kelas_id', $idKelas)->where('materi_id', $idMateri)->get();
+            $komentar = Komentar::where('kursus_id', $idKursus)->where('kelas_id', $idKelas)->where('materi_id', $idMateri)->orderBy('created_at','desc')->paginate(3);
     
             if($komentar){
                     return response()->json(

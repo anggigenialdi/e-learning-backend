@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Kursus;
 use App\Models\Kelas;
-use App\Models\Instruktur;
+use App\Models\Rating_kursus;
+use App\Models\Kursus_aktif;
 use App\Models\Kursus_saya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class KursusController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index','detailKursus']]);
+        $this->middleware('auth', ['except' => ['index','detailKursus', 'getRating']]);
     }
 
     public function index(){
@@ -269,6 +270,123 @@ class KursusController extends Controller
             ], 403);
         }
     }
+
+    // rating kursus
+    public function postRatingKursus(Request $request) {
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'kursus_id' => 'required|string',
+            'rating' => 'required|integer|min:1',
+            'review' => 'required|string',
+        ]);
+
+        try{
+
+            $addRating = new Rating_kursus;
+            $addRating->user_id = $request->user_id;
+            $addRating->kursus_id = $request->kursus_id;
+            $addRating->rating = $request->rating;
+            $addRating->review = $request->review;
+            
+            // Cek duplikat data
+            $duplicate = $addRating->where( 'kursus_id', $addRating->kursus_id )->first();
+            if ( $duplicate ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data'
+                ], 425);
+            } else {
+                $addRating->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully complete Rating',
+                'data' => $addRating, 
+            ], 201);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e
+            ], 403);
+        }
+
+
+    }
+
+    public function updateRatingKursus(Request $request, $id) {
+        $this->validate($request, [
+            'user_id'  => 'required|string',
+            'kursus_id' => 'required|string',
+            'rating' => 'required|integer|min:1|in:1,2,3,4,5',
+            'review' => 'required|string',
+        ]);
+
+        try{
+
+            $updateRating = Rating_kursus::find($id);
+            $updateRating->user_id = $request->user_id;
+            $updateRating->kursus_id = $request->kursus_id;
+            $updateRating->rating = $request->rating;
+            $updateRating->review = $request->review;
+            
+            // Cek duplikat data
+                $updateRating->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully update Rating',
+                'data' => $updateRating, 
+            ], 201);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e
+            ], 403);
+        }
+
+
+    }
+
+    public function getRating($idKursus){
+
+        $rating = Rating_kursus::where('kursus_id', $idKursus)->get();
+        $rating_length = count($rating);
+        
+        $data = [];
+        $data_rating = [];
+        
+        foreach ($rating as $rat){
+            $data['total'] = ($rat->sum('rating'))/$rating_length;
+        }
+
+        array_push ( $data_rating, $data);
+
+        if($rating){
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'rating berhasil diambil',
+                        'data' =>[
+                            'rating'=>$data_rating,
+                            'data_rating'=>$rating,
+                        ] 
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'rating gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+}
+    
+
 
 
 }

@@ -70,6 +70,17 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('add-transaksi', 'TransaksiController@postTransaksi');
     $router->put('update-transaksi/{id}', 'TransaksiController@updateTransaksi');
 
+
+    //Rating Kursus
+    $router->post('add-rating-kursus', 'KursusController@postRatingKursus');
+    $router->put('update-rating-kursus/{id}', 'KursusController@updateRatingKursus');
+    $router->get('rating/{idKursus}', 'KursusController@getRating');
+
+
+    //Kelas Selesai
+    $router->post('add-kelas-selesai', 'KelasController@postKelasSelesai');
+    $router->put('update-kelas-selesai/{id}', 'KelasController@updateKelasSelesai');
+
 });
 
 //Endpoint show image instruktur
