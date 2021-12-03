@@ -355,12 +355,12 @@ class KursusController extends Controller
         
         $data = [];
         $data_rating = [];
-        
-        foreach ($rating as $rat){
-            $data['total'] = ($rat->sum('rating'))/$rating_length;
-        }
+        $total_rating = 0;
 
-        array_push ( $data_rating, $data);
+        foreach ($rating as $rat){
+            $total_rating = ( $total_rating + $rat->rating );
+        }
+        $data_rating = $total_rating/$rating_length;
 
         if($rating){
                 return response()->json(
@@ -384,7 +384,7 @@ class KursusController extends Controller
                     400
                 );
             } 
-}
+    }
     
 
 
