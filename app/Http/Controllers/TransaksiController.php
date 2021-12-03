@@ -13,7 +13,7 @@ class TransaksiController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['getTransaksi', 'updateTransaksiStatus']]);
     }
 
     public function postTransaksi(Request $request){
@@ -111,4 +111,73 @@ class TransaksiController extends BaseController
 
 
     }
+
+    public function getTransaksi($idUser, $idKursus){
+
+        $transaksi = Transaksi::where('user_id', $idUser)->where('kursus_id', $idKursus)->where('status_transaksi', '=', 'menunggu')->get();
+        
+        $data = [];
+        $data_transaksi = [];
+        $data['total'] = 0;
+
+        foreach ($transaksi as $tra){
+            $data['total'] = (  $data['total'] + $tra->total_price );
+        }
+
+        array_push ( $data_transaksi, $data);
+
+        if($transaksi){
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'transaksi berhasil diambil',
+                        'data' =>[
+                            'transaksi'=>$data_transaksi,
+                            'data_transaksi'=>$transaksi,
+                        ] 
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'transaksi gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+    }
+
+    public function updateTransaksiStatus($idUser, $idKursus, Request $request){
+
+        $transaksi = Transaksi::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
+
+        $transaksi->update(['status_transaksi' => request('status_transaksi')]);
+
+        if($transaksi){
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'status transaksi berhasil diambil',
+                        'data' =>[
+                            'data_transaksi'=>$transaksi,
+                        ] 
+                    ],
+                    201
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'transaksi gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+    }
+
+
 }
