@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Kursus;
 use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
+use Carbon\Carbon as time;
+
+use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class TransaksiController extends BaseController
@@ -16,27 +20,24 @@ class TransaksiController extends BaseController
         $this->middleware('auth', ['except' => ['getTransaksi', 'updateTransaksiStatus']]);
     }
 
-    public function postTransaksi(Request $request){
-
-        $this->validate($request, [
-            'user_id'  => 'required|string',
-            'kursus_id'  => 'required|string',
-            'total_price'  => 'required|numeric',
-            'tanggal_pembelian'  => 'required|date',
-            'status_transaksi'  => 'required|string',
-        ]);
+    public function postTransaksi($idUser, $idKursus){
 
         try{
 
-            $addTransaksi = new Transaksi;
-            $addTransaksi->user_id = $request->user_id;
-            $addTransaksi->kursus_id = $request->kursus_id;
-            $addTransaksi->total_price = $request->total_price;
-            $addTransaksi->tanggal_pembelian = $request->tanggal_pembelian;
-            $addTransaksi->status_transaksi = $request->status_transaksi;
+            $user = User::where('id', $idUser)->first();
+            $kursus = Kursus::where('id', $idKursus)->first();
             
+
+            $addTransaksi = new Transaksi;
+            $addTransaksi->user_id = $user->id;
+            $addTransaksi->kursus_id = $kursus->id;
+            $addTransaksi->total_price = $kursus->harga_kursus;
+            $addTransaksi->tanggal_pembelian = time::now();
+            $addTransaksi->status_transaksi = 'menunggu';
+
+
             // Cek duplikat data
-            $duplicate_data = $addTransaksi->where( 'kursus_id', $addTransaksi->kursus_id )->first();
+            $duplicate_data = $addTransaksi->where('user_id', $addTransaksi->user_id)->where( 'kursus_id', $addTransaksi->kursus_id )->first();
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
@@ -45,19 +46,21 @@ class TransaksiController extends BaseController
 
                 ], 425);
             } else {
-
                 $addTransaksi->save();
+
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Successfully complete Transaksi',
+                    'data' => $addTransaksi, 
+                ], 201);
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'Successfully complete Transaksi',
-                'data' => $addTransaksi, 
-            ], 201);
+            
 
         }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e
+                'message' => $e, 
             ], 403);
         }
 
@@ -154,7 +157,7 @@ class TransaksiController extends BaseController
 
         $transaksi = Transaksi::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
 
-        $transaksi->update(['status_transaksi' => request('status_transaksi')]);
+        $transaksi->update(['status_transaksi' => 'aktif']);
 
         if($transaksi){
                 return response()->json(

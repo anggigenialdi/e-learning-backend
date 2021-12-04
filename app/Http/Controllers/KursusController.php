@@ -385,7 +385,7 @@ class KursusController extends Controller
                 );
             } 
     }
-    
+
 
 
 
