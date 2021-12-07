@@ -70,6 +70,13 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         $user = User::where('email',$request->email)->first();
+
+        $data_user = [
+            'id' => $user->id, 
+            'nama' => $user->nama, 
+            'email' => $user->email, 
+        ];
+
         if($user){
             if (Hash::check($request->password, $user->password)) {
                 if (!$token = Auth::attempt($credentials)) {
@@ -79,11 +86,14 @@ class AuthController extends Controller
                     ], 401);
                 }
                 else{
+                    $user->update([
+                        'token' => $token
+                    ]);
                     return response()->json([
-                        'success' => false,
-                        'message' => 'Success',
+                        'success' => true,
+                        'message' => 'Success Login',
                         'data'=>[
-                            'data'=>$user,
+                            'data'=>$data_user,
                             'token'=> $this->respondWithToken($token)->original['token'],
                         ]
                     ], 200);
