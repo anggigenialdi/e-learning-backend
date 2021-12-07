@@ -83,6 +83,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('add-kelas-selesai', 'KelasController@postKelasSelesai');
     $router->put('update-kelas-selesai/{id}', 'KelasController@updateKelasSelesai');
 
+    //Terakhir ditonton
+    $router->post('add-terakhir-ditonton', 'TerakhirDitontonController@postTerakhirDitonton');
+    $router->put('update-terakhir-ditonton/{id}', 'TerakhirDitontonController@updateTerakhirDitonton');
+    $router->get('terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@getTerakhirDitonton');
+
+
 });
 
 //Endpoint show image instruktur

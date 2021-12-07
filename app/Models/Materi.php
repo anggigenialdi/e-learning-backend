@@ -26,4 +26,8 @@ class Materi extends Model implements AuthenticatableContract, AuthorizableContr
         return $this->hasMany(Komentar::class, 'materi_id');
     }
 
+    public function terakhir_ditonton(){
+        return $this->hasMany(Terakhir_ditonton::class, 'materi_id');
+    }
+
 }

@@ -13,8 +13,9 @@ class Controller extends BaseController
     {
         return response()->json([
             'token' => $token,
+            'refresh_token' => Auth::refresh(),
             'token_type' => 'bearer',
-            // 'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60
         ], 200);
     }
 }

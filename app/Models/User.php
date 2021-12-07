@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'nama', 'email'
+        'nama', 'email','token'
     ];
 
     /**
@@ -30,7 +30,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password','token'
     ];
 
     public function user_profile(){
@@ -59,6 +59,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function kelas_selesai(){
         return $this->hasMany(Kelas_selesai::class, 'user_id');
+    }
+
+    public function terakhir_ditonton(){
+        return $this->hasMany(Terakhir_ditonton::class, 'user_id');
     }
 
     public function getJWTIdentifier()

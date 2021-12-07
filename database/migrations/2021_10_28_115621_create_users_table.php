@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique()->notNullable();
             $table->string('password');
             $table->enum('role', ['basic', 'admin'])->default('basic');
-            // $table->string('token')->nullable();
+            $table->string('token', 500)->nullable();
             $table->timestamps();
         });
         

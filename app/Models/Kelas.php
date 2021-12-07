@@ -37,4 +37,8 @@ class Kelas extends Model implements AuthenticatableContract, AuthorizableContra
         return $this->hasMany(Kelas_selesai::class, 'kelas_id');
     }
 
+    public function terakhir_ditonton(){
+        return $this->hasMany(Terakhir_ditonton::class, 'kelas_id');
+    }
+
 }
