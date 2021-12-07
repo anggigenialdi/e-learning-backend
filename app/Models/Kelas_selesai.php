@@ -14,12 +14,15 @@ class Kelas_selesai extends Model implements AuthenticatableContract, Authorizab
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'user_id', 'kelas_id'
+        'user_id', 'kelas_id','materi_id','kursus_id'
     ];
 
-    protected $hidden = [
-        'id',
-    ];
+    // protected $hidden = [
+    //     'id',
+    // ];
+    public function materi(){
+        return $this->belongsTo(Materi::class);
+    }
 
     public function user(){
         return $this->belongsTo(User::class);

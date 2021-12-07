@@ -17,6 +17,8 @@ class CreateKelasSelesaiTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
             $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('kursus_id');
+            $table->unsignedBigInteger('materi_id');
             $table->timestamps();
         });
 

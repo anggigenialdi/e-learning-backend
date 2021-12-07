@@ -7,16 +7,17 @@ use App\Models\Kelas;
 use App\Models\Rating_kursus;
 use App\Models\Kursus_aktif;
 use App\Models\Kursus_saya;
+use App\Models\Kelas_selesai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use SebastianBergmann\Environment\Console;
-
+use DB;
 class KursusController extends Controller
 {
     
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index','detailKursus', 'getRating']]);
+        $this->middleware('auth', ['except' => ['index','detailKursus', 'getRating','detailKursusSaya']]);
     }
 
     public function index(){
@@ -59,9 +60,16 @@ class KursusController extends Controller
     }
     public function detailKursusSaya($idKursus,$idUser){
         $kursus_saya = Kursus_saya::where('kursus_id', $idKursus)->where('user_id', $idUser)->first();
-
         $kursus = Kursus::where('id', $idKursus)->get();
         $kelas = Kelas::where('kursus_id', $idKursus)->get();
+        // $kursus_saya = DB::table('kursuses as ks')
+        // ->join('kursus_sayas as kursa', 'kursa.kursus_id', 'ks.id')->join('materis as mat','mat.kelas_id','ks.id')->join('kelas_selesais as kls_s','kls_s.kursus_id','ks.id')->where('kursa.user_id',$idUser)
+        // ->select(
+        //     'ks.*',
+        //     'mat.*',
+        //     'kls_s.*'
+        // )
+        // ->orderBy('ks.id', 'asc')->get();
 
         if($kursus_saya){
             $data = [];
@@ -78,8 +86,14 @@ class KursusController extends Controller
                 $data['tipe_kursus'] = $kur->tipe_kursus;
                 array_push($data_kursus, $data);
             }
+            $kelas_selesai = Kelas_selesai::where('kursus_id',$idKursus)->get();
+
             foreach($kelas as $kel){
                 $data['materi'] = $kel->materi;
+                $data['kelas_selesai'] = $kelas_selesai;
+            }
+
+            foreach($kelas_selesai as $kelsel){
             }
             if ($kursus) {
                 return response()->json(
@@ -87,7 +101,7 @@ class KursusController extends Controller
                         'success' => true,
                         'message' => 'kursus berhasil diambil',
                         'data' => [
-                            'data' => $data_kursus,
+                            'data' => $kursus_saya,
                             'data_kelas' =>$kelas,
                             ]
                             ,

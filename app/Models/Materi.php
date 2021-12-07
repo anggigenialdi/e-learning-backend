@@ -21,6 +21,9 @@ class Materi extends Model implements AuthenticatableContract, AuthorizableContr
     public function kelas(){
         return $this->belongsTo(Kelas::class);
     }
+    public function kelas_selesai(){
+        return $this->hasMany(Kelas_selesai::class, 'materi_id');
+    }
 
     public function komentar(){
         return $this->hasMany(Komentar::class, 'materi_id');

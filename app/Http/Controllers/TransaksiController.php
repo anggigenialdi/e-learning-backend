@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kursus;
 use App\Models\Transaksi;
+use App\Models\Kursus_saya;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class TransaksiController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['getTransaksi', 'updateTransaksiStatus']]);
+        $this->middleware('auth', ['except' => ['getTransaksi', 'updateTransaksiStatus','postTransaksi']]);
     }
 
     public function postTransaksi($idUser, $idKursus){
@@ -115,14 +116,21 @@ class TransaksiController extends BaseController
 
     }
 
-    public function getTransaksi($idUser, $idKursus){
+    public function getTransaksi($idUser){
+    // public function getTransaksi($idUser, $idKursus){
 
-        $transaksi = Transaksi::where('user_id', $idUser)->where('kursus_id', $idKursus)->where('status_transaksi', '=', 'menunggu')->get();
+        $transaksi = Transaksi::where('user_id', $idUser)->where('status_transaksi', '=', 'menunggu')->get();
         
         $data = [];
         $data_transaksi = [];
+        $res = [];
+        $res_transaksi = [];
         $data['total'] = 0;
 
+        foreach ($transaksi as $tra){
+            $res['nama'] = $tra->kursus->judul_kursus;
+            array_push ( $res_transaksi, $res);
+        }
         foreach ($transaksi as $tra){
             $data['total'] = (  $data['total'] + $tra->total_price );
         }
@@ -136,7 +144,7 @@ class TransaksiController extends BaseController
                         'message' => 'transaksi berhasil diambil',
                         'data' =>[
                             'transaksi'=>$data_transaksi,
-                            'data_transaksi'=>$transaksi,
+                            'data_transaksi'=>$res_transaksi,
                         ] 
                     ],
                     201
@@ -160,6 +168,26 @@ class TransaksiController extends BaseController
         $transaksi->update(['status_transaksi' => 'aktif']);
 
         if($transaksi){
+            $addKursusSaya = new Kursus_saya;
+            $addKursusSaya->user_id = $transaksi->user_id;
+            $addKursusSaya->kursus_id = $transaksi->kursus_id;
+
+            $duplicate_data = $addKursusSaya->where( 'kursus_id', $addKursusSaya->kursus_id)->where('user_id',$addKursusSaya->user_id)->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $addKursusSaya,
+
+                ], 425);
+            } else {
+                $addKursusSaya->save();
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully complete Kursus Saya',
+                'data' => $addKursusSaya, 
+            ], 201);
                 return response()->json(
                     [
                         'success' => true,

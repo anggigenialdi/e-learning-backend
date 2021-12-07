@@ -69,7 +69,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Transaksi
     $router->post('add-transaksi/{idUser}/{idKursus}', 'TransaksiController@postTransaksi');
     $router->put('update-transaksi/{id}', 'TransaksiController@updateTransaksi');
-    $router->get('transaksi/{idUser}/{idKursus}', 'TransaksiController@getTransaksi');
+    $router->get('transaksi/{idUser}', 'TransaksiController@getTransaksi');
+    // $router->get('transaksi/{idUser}/{idKursus}', 'TransaksiController@getTransaksi');
     $router->put('update-transaksi/{idUser}/{idKursus}', 'TransaksiController@updateTransaksiStatus');
 
 

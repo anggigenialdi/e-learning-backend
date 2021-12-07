@@ -73,6 +73,7 @@ class KursusSayaController extends Controller
                 $no++;
                 $data['id_kursus'] = $kur->kursus->id;
                 $data['nama_kursus'] = $kur->kursus->judul_kursus;
+                // $data['harga'] = $kur->kursus->harga_kursus;
                 $data['tipe_kursus'] = $kur->kursus->tipe_kursus;
                 array_push($data_kursus, $data);
             }
