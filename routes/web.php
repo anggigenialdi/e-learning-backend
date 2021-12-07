@@ -90,6 +90,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->get('terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@getTerakhirDitonton');
 
 
+    //Voucher
+    $router->post('add-voucher', 'VoucherController@postVoucher');
+    $router->put('update-voucher/{idVoucher}', 'VoucherController@updateVoucher');
+    $router->get('voucher/{idVoucher}', 'VoucherController@getVoucher');
+
 });
 
 //Endpoint show image instruktur

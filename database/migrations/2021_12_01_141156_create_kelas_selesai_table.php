@@ -33,6 +33,18 @@ class CreateKelasSelesaiTable extends Migration
             ->references('id')
             ->on('kelas');
         });
+
+        Schema::table('kelas_selesais', function(Blueprint $kolom){
+            $kolom->foreign('kursus_id')
+            ->references('id')
+            ->on('kursuses');
+        });
+
+        Schema::table('kelas_selesais', function(Blueprint $kolom){
+            $kolom->foreign('materi_id')
+            ->references('id')
+            ->on('materis');
+        });
     }
 
     /**
