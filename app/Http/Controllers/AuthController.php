@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -79,13 +80,8 @@ class AuthController extends Controller
 
         if($user){
             if (Hash::check($request->password, $user->password)) {
-                if (!$token = Auth::attempt($credentials)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Unauthorized'
-                    ], 401);
-                }
-                else{
+                $token = base64_encode(Str::random(100));
+
                     $user->update([
                         'token' => $token
                     ]);
@@ -94,10 +90,9 @@ class AuthController extends Controller
                         'message' => 'Success Login',
                         'data'=>[
                             'data'=>$data_user,
-                            'token'=> $this->respondWithToken($token)->original['token'],
+                            'token'=> $token,
                         ]
                     ], 200);
-                }
             } else {
                 return response()->json([
                     'success' => false,

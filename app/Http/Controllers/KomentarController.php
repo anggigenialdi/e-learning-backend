@@ -14,7 +14,7 @@ class KomentarController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['getKomentar']]);
+        $this->middleware('auth', ['except' => ['getKomentar','postKomentar']]);
     }
 
     public function getKomentar($idKursus,$idKelas,$idMateri){
