@@ -48,6 +48,9 @@ class Kursus extends Model implements AuthenticatableContract, AuthorizableContr
     public function kursus_aktif(){
         return $this->hasMany(Kursus_aktif::class, 'kursus_id');
     }
+    public function terakhir_ditonton(){
+        return $this->hasMany(Terakhir_ditonton::class, 'kursus_id');
+    }
 
     
 
