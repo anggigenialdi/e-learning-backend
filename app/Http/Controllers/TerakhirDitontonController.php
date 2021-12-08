@@ -9,7 +9,7 @@ use App\Models\Terakhir_ditonton;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use DB;
 class TerakhirDitontonController extends Controller
 {
     /**
@@ -95,15 +95,28 @@ class TerakhirDitontonController extends Controller
     public function getTerakhirDitonton($idUser, $idKursus){
 
         $history = Terakhir_ditonton::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
+        // $history = DB::table('kursuses as ks')
+        // ->join('terakhir_ditontons as td', 'td.kursus_id', 'ks.id')
+        // ->join('kelas as kls','kls.kursus_id','ks.id')
+        // ->join('materis as mat','mat.kelas_id','ks.id')
+        // ->where('td.user_id',$idUser)
+        // ->where('td.kursus_id',$idKursus)
+        // // ->where('td.materi_id','mat.id')
+        // ->select(
+        //     'ks.*',
+        //     'kls.*',
+        //     'mat.*',
+        // )->get();
                 
 
         if($history){
+            $materi = Materi::where('kelas_id',$history->kelas_id)->where('id',$history->materi_id)->get();
             return response()->json(
                 [
                     'success' => true,
                     'message' => 'history berhasil diambil',
                     'data' =>[
-                        'history'=>$history,
+                        'history'=>$materi,
                     ] 
                 ],
                 201
