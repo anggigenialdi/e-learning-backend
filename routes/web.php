@@ -86,7 +86,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     //Terakhir ditonton
     $router->post('add-terakhir-ditonton', 'TerakhirDitontonController@postTerakhirDitonton');
-    $router->put('update-terakhir-ditonton/{id}', 'TerakhirDitontonController@updateTerakhirDitonton');
+    // $router->put('update-terakhir-ditonton/{id}', 'TerakhirDitontonController@updateTerakhirDitonton');
+    $router->post('update-terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@updateTerakhirDitonton');
     $router->get('terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@getTerakhirDitonton');
 
 

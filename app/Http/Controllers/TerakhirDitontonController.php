@@ -9,7 +9,7 @@ use App\Models\Terakhir_ditonton;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use DB;
 class TerakhirDitontonController extends Controller
 {
     /**
@@ -67,13 +67,11 @@ class TerakhirDitontonController extends Controller
 
     }
 
-    public function updateTerakhirDitonton($id, Request $request){
+    public function updateTerakhirDitonton($idUser, $idKursus, Request $request){
 
-        $updateData = Terakhir_ditonton::where('id', $id)->first();
+        $updateData = Terakhir_ditonton::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
 
         $updateData->update([
-            'user_id' => $request->input('user_id'),
-            'kursus_id' => $request->input('kursus_id'),
             'kelas_id' => $request->input('kelas_id'),
             'materi_id' => $request->input('materi_id'),
         ]);
@@ -84,7 +82,7 @@ class TerakhirDitontonController extends Controller
                         'success' => true,
                         'message' => 'berhasil',
                         'data' =>[
-                            'data_history'=>$updateData,
+                            'data_history'=> $updateData,
                         ] 
                     ],
                     201
@@ -105,46 +103,31 @@ class TerakhirDitontonController extends Controller
     public function getTerakhirDitonton($idUser, $idKursus){
 
         $history = Terakhir_ditonton::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
+        // $history = DB::table('kursuses as ks')
+        // ->join('terakhir_ditontons as td', 'td.kursus_id', 'ks.id')
+        // ->join('kelas as kls','kls.kursus_id','ks.id')
+        // ->join('materis as mat','mat.kelas_id','ks.id')
+        // ->where('td.user_id',$idUser)
+        // ->where('td.kursus_id',$idKursus)
+        // // ->where('td.materi_id','mat.id')
+        // ->select(
+        //     'ks.*',
+        //     'kls.*',
+        //     'mat.*',
+        // )->get();
                 
         $user = User::where('id', $idUser)->get();
         $kursus = Kursus::where('id', $idKursus)->get();
         $kelas = Kelas::where('kursus_id', $idKursus)->get();
 
         if($history){
-            $data = [];
-            $data_kursus = [];
-            $data_user = [];
-            $data_mtr = [];
-            
-
-            foreach ($user as $us) {
-                $datas['id_user'] = $us->id;
-                $datas['nama_user'] = $us->nama;
-                $datas['email'] = $us->email;
-                array_push($data_user, $datas);
-            }
-            foreach ($kursus as $kur) {
-                $data['id_kursus'] = $kur->id;
-                $data['nama_instruktur'] = $kur->instruktur->nama;
-                $data['nama_kursus'] = $kur->judul_kursus;
-                $data['foto_instruktur'] = $kur->instruktur->foto;
-                $data['foto_kursus'] = $kur->foto;
-                $data['harga'] = $kur->harga_kursus;
-                $data['tipe_kursus'] = $kur->tipe_kursus;
-                array_push($data_kursus, $data);
-            }
-            foreach($kelas as $kel){
-                $kel->materi;
-            }
+            $materi = Materi::where('kelas_id',$history->kelas_id)->where('id',$history->materi_id)->get();
             return response()->json(
                 [
                     'success' => true,
                     'message' => 'history berhasil diambil',
                     'data' =>[
-                        'data_user'=>$data_user,
-                        'data_kursus'=>$data_kursus,
-                        'data_kelas'=>$kelas,
-                        'data_materi'=>$data_mtr,
+                        'history'=>$materi,
                     ] 
                 ],
                 201
