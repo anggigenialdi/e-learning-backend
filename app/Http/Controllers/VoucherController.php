@@ -113,4 +113,36 @@ class VoucherController extends Controller
                 );
             } 
     }
+
+    public function postCodeVoucher(Request $request){
+
+        $voucher = Voucher::where('kode', $request->input('kode'))->first();
+                
+
+        if($voucher){
+            $data_voucher = [ 
+                'kode' => $voucher->kode, 
+                'potongan' => $voucher->potongan, 
+            ];
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'voucher berhasil diambil',
+                    'data' =>[
+                        'voucher'=>$data_voucher,
+                    ] 
+                ],
+                201
+            );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'gagal diambil',
+                        'data' => '',
+                    ],
+                    400
+                );
+            } 
+    }
 }
