@@ -106,13 +106,17 @@ class KelasController extends Controller
     public function postKelasSelesai(Request $request) {
         $this->validate($request, [
             'user_id'  => 'required|string',
-            'kelas_id' => 'required|string'
+            'kelas_id' => 'required|string',
+            'kursus_id' => 'required|string',
+            'materi_id' => 'required|string',
         ]);
 
         try{
 
             $addKelasSelesai = new Kelas_selesai;
             $addKelasSelesai->user_id = $request->user_id;
+            $addKelasSelesai->kursus_id = $request->kursus_id;
+            $addKelasSelesai->materi_id = $request->materi_id;
             $addKelasSelesai->kelas_id = $request->kelas_id;
             
             // Cek duplikat data

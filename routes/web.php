@@ -69,7 +69,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //Transaksi
     $router->post('add-transaksi/{idUser}/{idKursus}', 'TransaksiController@postTransaksi');
     $router->put('update-transaksi/{id}', 'TransaksiController@updateTransaksi');
-    $router->get('transaksi/{idUser}/{idKursus}', 'TransaksiController@getTransaksi');
+    $router->get('transaksi/{idUser}', 'TransaksiController@getTransaksi');
+    // $router->get('transaksi/{idUser}/{idKursus}', 'TransaksiController@getTransaksi');
     $router->put('update-transaksi/{idUser}/{idKursus}', 'TransaksiController@updateTransaksiStatus');
 
 
@@ -85,9 +86,16 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     //Terakhir ditonton
     $router->post('add-terakhir-ditonton', 'TerakhirDitontonController@postTerakhirDitonton');
-    $router->put('update-terakhir-ditonton/{id}', 'TerakhirDitontonController@updateTerakhirDitonton');
+    // $router->put('update-terakhir-ditonton/{id}', 'TerakhirDitontonController@updateTerakhirDitonton');
+    $router->post('update-terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@updateTerakhirDitonton');
     $router->get('terakhir-ditonton/{idUser}/{idKursus}', 'TerakhirDitontonController@getTerakhirDitonton');
 
+
+    //Voucher
+    $router->post('add-voucher', 'VoucherController@postVoucher');
+    $router->put('update-voucher/{idVoucher}', 'VoucherController@updateVoucher');
+    $router->get('voucher/{idVoucher}', 'VoucherController@getVoucher');
+    $router->post('voucher', 'VoucherController@postCodeVoucher');
 
 });
 

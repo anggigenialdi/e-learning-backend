@@ -9,7 +9,7 @@ use App\Models\Terakhir_ditonton;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use DB;
 class TerakhirDitontonController extends Controller
 {
     /**
@@ -37,8 +37,18 @@ class TerakhirDitontonController extends Controller
             $terakhirDitonton->kursus_id = $request->kursus_id;
             $terakhirDitonton->kelas_id = $request->kelas_id;
             $terakhirDitonton->materi_id = $request->materi_id;
-            
-            $terakhirDitonton->save();
+
+            $duplicate_data = $terakhirDitonton->where( 'kursus_id', $terakhirDitonton->kursus_id)->where('user_id',$terakhirDitonton->user_id)->where( 'kelas_id', $terakhirDitonton->kelas_id)->where( 'materi_id', $terakhirDitonton->materi_id)->first();
+            if ( $duplicate_data ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate data',
+                    'data' => $terakhirDitonton,
+
+                ], 425);
+            } else {
+                $terakhirDitonton->save();
+            }
 
 
             return response()->json([
@@ -57,13 +67,11 @@ class TerakhirDitontonController extends Controller
 
     }
 
-    public function updateTerakhirDitonton($id, Request $request){
+    public function updateTerakhirDitonton($idUser, $idKursus, Request $request){
 
-        $updateData = Terakhir_ditonton::where('id', $id)->first();
+        $updateData = Terakhir_ditonton::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
 
         $updateData->update([
-            'user_id' => $request->input('user_id'),
-            'kursus_id' => $request->input('kursus_id'),
             'kelas_id' => $request->input('kelas_id'),
             'materi_id' => $request->input('materi_id'),
         ]);
@@ -74,7 +82,7 @@ class TerakhirDitontonController extends Controller
                         'success' => true,
                         'message' => 'berhasil',
                         'data' =>[
-                            'data_history'=>$updateData,
+                            'data_history'=> $updateData,
                         ] 
                     ],
                     201
@@ -95,15 +103,31 @@ class TerakhirDitontonController extends Controller
     public function getTerakhirDitonton($idUser, $idKursus){
 
         $history = Terakhir_ditonton::where('user_id', $idUser)->where('kursus_id', $idKursus)->first();
+        // $history = DB::table('kursuses as ks')
+        // ->join('terakhir_ditontons as td', 'td.kursus_id', 'ks.id')
+        // ->join('kelas as kls','kls.kursus_id','ks.id')
+        // ->join('materis as mat','mat.kelas_id','ks.id')
+        // ->where('td.user_id',$idUser)
+        // ->where('td.kursus_id',$idKursus)
+        // // ->where('td.materi_id','mat.id')
+        // ->select(
+        //     'ks.*',
+        //     'kls.*',
+        //     'mat.*',
+        // )->get();
                 
+        $user = User::where('id', $idUser)->get();
+        $kursus = Kursus::where('id', $idKursus)->get();
+        $kelas = Kelas::where('kursus_id', $idKursus)->get();
 
         if($history){
+            $materi = Materi::where('kelas_id',$history->kelas_id)->where('id',$history->materi_id)->get();
             return response()->json(
                 [
                     'success' => true,
                     'message' => 'history berhasil diambil',
                     'data' =>[
-                        'history'=>$history,
+                        'history'=>$materi,
                     ] 
                 ],
                 201

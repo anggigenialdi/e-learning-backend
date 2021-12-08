@@ -17,6 +17,8 @@ class CreateKelasSelesaiTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
             $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('kursus_id');
+            $table->unsignedBigInteger('materi_id');
             $table->timestamps();
         });
 
@@ -30,6 +32,18 @@ class CreateKelasSelesaiTable extends Migration
             $kolom->foreign('kelas_id')
             ->references('id')
             ->on('kelas');
+        });
+
+        Schema::table('kelas_selesais', function(Blueprint $kolom){
+            $kolom->foreign('kursus_id')
+            ->references('id')
+            ->on('kursuses');
+        });
+
+        Schema::table('kelas_selesais', function(Blueprint $kolom){
+            $kolom->foreign('materi_id')
+            ->references('id')
+            ->on('materis');
         });
     }
 
