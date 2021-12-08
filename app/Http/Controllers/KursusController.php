@@ -370,6 +370,9 @@ class KursusController extends Controller
         $data = [];
         $data_rating = [];
         $total_rating = 0;
+        foreach ($rating as $rat) {
+            $rat->user->nama;
+        }
 
         foreach ($rating as $rat){
             $total_rating = ( $total_rating + $rat->rating );
