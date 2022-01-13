@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kursus;
 use App\Models\Kelas;
+use App\Models\Materi;
 use App\Models\Rating_kursus;
 use App\Models\Kursus_aktif;
 use App\Models\Kursus_saya;
@@ -86,15 +87,13 @@ class KursusController extends Controller
                 $data['tipe_kursus'] = $kur->tipe_kursus;
                 array_push($data_kursus, $data);
             }
-            $kelas_selesai = Kelas_selesai::where('kursus_id',$idKursus)->get();
-
             foreach($kelas as $kel){
                 $data['materi'] = $kel->materi;
-                $data['kelas_selesai'] = $kelas_selesai;
+                foreach ($kel->materi as $materi) {
+                   $materi->kelas_selesai;
+                }
             }
 
-            foreach($kelas_selesai as $kelsel){
-            }
             if ($kursus) {
                 return response()->json(
                     [
