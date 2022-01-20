@@ -120,7 +120,7 @@ class KelasController extends Controller
             $addKelasSelesai->kelas_id = $request->kelas_id;
             
             // Cek duplikat data
-            $duplicate = $addKelasSelesai->where( 'kelas_id', $addKelasSelesai->kelas_id )->first();
+            $duplicate = $addKelasSelesai->where( 'kelas_id', $addKelasSelesai->kelas_id )->where( 'materi_id', $addKelasSelesai->materi_id )->where( 'user_id', $addKelasSelesai->user_id )->first();
             if ( $duplicate ) {
                 return response()->json([
                     'success' => false,
