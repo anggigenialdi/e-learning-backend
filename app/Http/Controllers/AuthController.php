@@ -12,50 +12,38 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        //validate incoming request 
-        $this->validate($request, [
-            'nama'  => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
-        ]);
-
-        try {
-
-            $user = new User;
-            $user->nama     = $request->input('nama');
-            $user->email    = $request->input('email');
-            $plainPassword  = $request->input('password');
-            $user->password = app('hash')->make($plainPassword);
-            
             // Cek duplikat data
-            $duplicate_data = $user->where( 'email', $user->email )->first();
+            $duplicate_data = User::where( 'email', $request->input('email') )->first();
+
             if ( $duplicate_data ) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Duplicate data',
-                    'data' => $user,
+                    'message' => 'Email Sudah Terdaftar',
+                    'data' => null,
 
                 ], 425);
+            }
+            else if( $request->input('password') !==  $request->input('password_confirmation')){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password Tidak Sama',
+                    'data' => null,
+                ], 425);
             } else {
-
+                $user = new User;
+                $user->nama     = $request->input('nama');
+                $user->email    = $request->input('email');
+                $plainPassword  = $request->input('password');
+                $user->password = app('hash')->make($plainPassword);
                 $user->save();
             } 
 
             //return successful response
             return response()->json([
                 'success' => true,
-                'message' => 'User added successfully!',
+                'message' => 'Registrasi Berhasil',
                 'user' => $user, 
             ], 201);
-
-        } catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                'success' => false,
-                'message' => $e
-            ], 409);
-        }
-
         
 
     }
